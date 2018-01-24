@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <pop name = "Site Central">
+        <server order="1" name="SIT1DTM13" model="centos 6.6" os="Linux">
+            <connection login="root" password="xxxxxxx"/>
+            <address ip="0.0.0.0" port="22"/>
+            <actions>
+                <action order="1" type="command" name="distribHTTPcgm" src="/usr/bin/python -u /opt/iplabel/script/ManageInitService/ManageInitService.py -s distribHTTPcgm" use="like_service" param="-o" />
+                <action order="2" type="command" name="distribHTTPmmc" src="/usr/bin/python -u /opt/iplabel/script/ManageInitService/ManageInitService.py -s distribHTTPmmc" use="like_service" param="-o" />
+                <action order="3" type="service" name="httpd" />
+            </actions>
+        </server>
+
+        <server order="2" name="SIT1DTM14" model="centos 6.6" os="Linux">
+            <connection login="root" password="xxxxxx"/>
+            <address ip="0.0.0.0" port="22"/>
+            <actions>
+                <action order="1" type="command" name="distribHTTPcgm" src="/usr/bin/python -u /opt/iplabel/script/ManageInitService/ManageInitService.py -s distribHTTPcgm" use="like_service" param="-o" />
+                <action order="2" type="command" name="distribHTTPmmc" src="/usr/bin/python -u /opt/iplabel/script/ManageInitService/ManageInitService.py -s distribHTTPmmc" use="like_service" param="-o" />
+                <action order="3" type="command" name="md5distrib" src="/usr/bin/python -u /opt/iplabel/script/ManageInitService/ManageInitService.py -s md5distrib" use="like_service" param="-o" />
+                <action order="4" type="command" name="mvdistrib" src="/usr/bin/python -u /opt/iplabel/script/ManageInitService/ManageInitService.py -s mvdistrib" use="like_service" param="-o" />
+                <action order="5" type="service" name="httpd" />
+                <action order="6" type="service" name="vsftpd" />
+            </actions>
+        </server>
+
+        <server order="3" name="SIT1DTM16" model="centos 6.6" os="Linux">
+            <connection login="root" password="xxxxxx"/>
+            <address ip="0.0.0.0" port="22"/>
+            <actions>
+                <action order="1" type="command" name="distribHTTPcgm" src="/usr/bin/python -u /opt/iplabel/script/ManageInitService/ManageInitService.py -s distribHTTPcgm" use="like_service" param="-o" />
+                <action order="2" type="command" name="distribHTTPmmc" src="/usr/bin/python -u /opt/iplabel/script/ManageInitService/ManageInitService.py -s distribHTTPmmc" use="like_service" param="-o" />
+                <action order="3" type="command" name="md5distrib" src="/usr/bin/python -u /opt/iplabel/script/ManageInitService/ManageInitService.py -s md5distrib" use="like_service" param="-o" />
+                <action order="4" type="command" name="mvdistrib" src="/usr/bin/python -u /opt/iplabel/script/ManageInitService/ManageInitService.py -s mvdistrib" use="like_service" param="-o" />
+                <action order="5" type="service" name="httpd" />
+                <action order="6" type="service" name="vsftpd" />
+            </actions>
+        </server>
+
+        <server order="4" name="SIT1DTM18" model="centos 6.6" os="Linux">
+            <connection login="root" password="xxxxxx"/>
+            <address ip="0.0.0.208" port="22"/>
+            <actions>
+                <action order="1" type="command" name="distribHTTPcgm" src="/usr/bin/python -u /opt/iplabel/script/ManageInitService/ManageInitService.py -s distribHTTPcgm" use="like_service" param="-o" />
+                <action order="2" type="command" name="distribHTTPmmc" src="/usr/bin/python -u /opt/iplabel/script/ManageInitService/ManageInitService.py -s distribHTTPmmc" use="like_service" param="-o" />
+                <action order="3" type="command" name="md5distrib" src="/usr/bin/python -u /opt/iplabel/script/ManageInitService/ManageInitService.py -s md5distrib" use="like_service" param="-o" />
+                <action order="4" type="command" name="mvdistrib" src="/usr/bin/python -u /opt/iplabel/script/ManageInitService/ManageInitService.py -s mvdistrib" use="like_service" param="-o" />
+
+                <action order="5" type="service" name="httpd" />
+                <action order="6" type="service" name="vsftpd" />
+            </actions>
+        </server>
+
+        <server order="5" name="SIT1DTM21" model="centos 6.7" os="Linux">
+            <connection login="root" password="xxxxxx"/>
+            <address ip="0.0.0.183" port="22"/>
+            <actions>
+                <action order="1" type="command" name="AnalyseCptRendu" src="/usr/bin/python -u /opt/iplabel/script/AnalyseCptRendu/AnalyseCptRendu.py" use="like_service" param="-o"/>
+                <action order="2" type="command" name="mailer" src="/usr/bin/python -u /opt/iplabel/script/ManageInitService/ManageInitService.py -s mailer" use="like_service" param="-o" />
+                <action order="3" type="command" name="rapport" src="/usr/bin/python -u /opt/iplabel/script/ManageInitService/ManageInitService.py -s rapport" use="like_service" param="-o" />
+                <action order="4" type="command" name="scenvoitrap" src="/usr/bin/python -u /opt/iplabel/script/ManageInitService/ManageInitService.py -s scenvoitrap" use="like_service" param="-o" />
+                <action order="5" type="service" name="crond" />
+            </actions>
+        </server>
+
+
+        <server order="6" name="SIT1DTM12" model="centos 6.6" os="Linux">
+            <connection login="root" password="xxxxxx"/>
+            <address ip="0.0.0.179" port="22"/>
+            <actions>
+                <action order="1" type="command" name="ipldist" src="/usr/bin/python -u /opt/iplabel/script/ManagScAppli/ManageInitService.py -s ipldist " use="like_service" param="-o" />
+                <action order="2" type="command" name="genmission" src="/usr/bin/python -u /opt/iplabel/script/ManagScAppli/ManageInitService.py -s genmission " use="like_service" param="-o" />
+                <action order="3" type="service" name="ipldist" />
+                <action order="4" type="service" name="vsftpd" />
+            </actions>
+        </server>
+
+        <server order="7" name="SIT2DTV80" model="server2012 R2" os="Windows">
+            <connection login="administrator" password="xxxxxx"/>
+            <address ip="0.0.0.0" port="5980"/>
+            <actions>
+                <action order="1" type="service" name="tabsvc"/>
+                <action order="2" type="service" name="tablicsrv"/>
+            </actions>
+        </server>
+
+        <server order="8" name="SIT2DTV81" model="server2012 R2" os="Windows">
+            <connection login="administrator" password="xxxxxx"/>
+            <address ip="0.0.0.0" port="5981"/>
+            <actions>
+                <action order="1" type="service" name="tabsvc"/>
+                <action order="2" type="service" name="tablicsrv"/>
+            </actions>
+        </server>
+
+        <server order="9" name="SIT2DTV82" model="centos 6.5" os="Linux">
+            <connection login="root" password="7Q2W6M42"/>
+            <address ip="0.0.0.0" port="2282"/>
+            <actions>
+                <action order="1" type="command" name="comment" src="/etc/hosts" use="comment_file" param="" />
+                <!--<action order="1" type="command" name="host" src="cp -p /etc/hosts /etc/hosts.back" use="simple" param="" />-->
+                <action order="2" type="command" name="uptime" src="uptime" use="simple" param="" />
+            </actions>
+        </server>
+
+        <server order="10" name="SIT2DTV85" model="centos 6.5" os="Linux">
+            <connection login="root" password="7Q2W6M42"/>
+            <address ip="0.0.0.0" port="2285"/>
+            <actions>
+                <action order="1" type="command" name="comment" src="/etc/hosts" use="comment_file" param="" />
+                <!--<action order="1" type="command" name="host" src="cp -p /etc/hosts /etc/hosts.back" use="simple" param="" />-->
+                <action order="2" type="command" name="uptime" src="uptime" use="simple" param="" />
+            </actions>
+        </server>
+
+        <server order="11" name="SIT1DTM60" model="centos 6.6" os="Linux">
+            <connection login="root" password="xxxxxx"/>
+            <address ip="0.0.0.173" port="22"/>
+            <actions>
+                <action order="1" type="service" name="httpd" />
+                <action order="2" type="command" name="uptime" src="uptime" use="simple" param="" />
+            </actions>
+        </server>
+
+        <server order="12" name="SIT1DTM61" model="centos 6.6" os="Linux">
+            <connection login="root" password="xxxxxx"/>
+            <address ip="0.0.0.174" port="22"/>
+            <actions>
+                <action order="1" type="service" name="httpd" />
+                <action order="2" type="command" name="uptime" src="uptime" use="simple" param="" />
+            </actions>
+        </server>
+
+        <server order="13" name="SIT1DTM62" model="centos 6.6" os="Linux">
+            <connection login="root" password="xxxxxx"/>
+            <address ip="0.0.0.175" port="22"/>
+            <actions>
+                <action order="1" type="service" name="httpd" />
+                <action order="2" type="command" name="uptime" src="uptime" use="simple" param="" />
+            </actions>
+        </server>
+
+        <server order="14" name="SIT1DTM63" model="centos 6.6" os="Linux">
+            <connection login="root" password="xxxxxx"/>
+            <address ip="0.0.0.193" port="22"/>
+            <actions>
+                <action order="1" type="service" name="httpd" />
+                <action order="2" type="command" name="uptime" src="uptime" use="simple" param="" />
+            </actions>
+        </server>
+
+        <server order="15" name="SIT1DTM17" model="centos 6.6" os="Linux">
+            <connection login="root" password="xxxxxx"/>
+            <address ip="0.0.0.172" port="22"/>
+            <actions>
+                <action order="1" type="service" name="httpd" />
+                <action order="2" type="service" name="crond" />
+            </actions>
+        </server>
+
+        <server order="16" name="SIT1DTM22" model="centos 6.6" os="Linux">
+            <connection login="root" password="xxxxxx"/>
+            <address ip="0.0.0.199" port="22"/>
+            <actions>
+                <action order="1" type="service" name="httpd" />
+                <action order="2" type="service" name="crond" />
+            </actions>
+        </server>
+
+        <server order="17" name="SIT1DTM40" model="centos 6.7" os="Linux">
+            <connection login="root" password="xxxxxx"/>
+            <address ip="0.0.0.189" port="22"/>
+            <actions>
+                <action order="1" type="service" name="httpd" />
+                <action order="2" type="command" name="uptime" src="uptime" use="simple" param="" />
+            </actions>
+        </server>
+
+        <server order="18" name="SIT1DTM41" model="centos 6.7" os="Linux">
+            <connection login="root" password="xxxxxx"/>
+            <address ip="0.0.0.190" port="22"/>
+            <actions>
+                <action order="1" type="service" name="crond" />
+                <action order="2" type="service" name="jenkins" />
+            </actions>
+        </server>
+
+        <server order="19" name="SIT1DTM33" model="centos 6.7" os="Linux">
+            <connection login="root" password="xxxxxx"/>
+            <address ip="0.0.0.202" port="22"/>
+            <actions>
+                <action order="1" type="service" name="httpd" />
+                <action order="2" type="command" name="uptime" src="uptime" use="simple" param="" />
+            </actions>
+        </server>
+
+        <server order="20" name="SIT1DTM30" model="centos 6.6" os="Linux">
+            <connection login="root" password="xxxxxx"/>
+            <address ip="0.0.0.186" port="22"/>
+            <actions>
+                <action order="1" type="service" name="crond" />
+                <action order="2" type="service" name="httpd" />
+            </actions>
+        </server>
+
+        <server order="21" name="SIT1DTM35" model="centos 6.6" os="Linux">
+            <connection login="root" password="xxxxxx"/>
+            <address ip="0.0.0.184" port="22"/>
+            <actions>
+                <action order="1" type="service" name="httpd" />
+                <action order="2" type="command" name="uptime" src="uptime" use="simple" param="" />
+            </actions>
+        </server>
+
+        <server order="22" name="SIT1DTM32" model="centos 6.7" os="Linux">
+            <connection login="root" password="xxxxxx"/>
+            <address ip="0.0.0.187" port="22"/>
+            <actions>
+                <action order="1" type="service" name="crond" />
+                <action order="2" type="service" name="httpd" />
+            </actions>
+        </server>
+    </pop>
+</config>
+

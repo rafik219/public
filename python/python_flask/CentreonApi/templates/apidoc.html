@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Api documentation</title>
+</head>
+<body>
+<p><em>Created by: RBO 22/01/2018 </em></p>
+    <h1>Simple documentation CentreonAPI</h1>
+    <ul>
+        <li>
+            <h3>Method : <strong>get_all_critical_service():</strong></h3>
+            <p><u>Definition</u>: Cette méthode retourne en sortie un json contenant la liste des services critiques sur Nagios.</p>
+            <p><u>Usagew</u>: http://1.42.40.191:5000/get_all_critical_service</p>
+        </li>
+        <li>
+            <h3>Method : <strong>get_all_service_for_host():</strong></h3>
+            <p><u>Definition</u>: Cette méthode retourne en sortie un json contenant la liste de tous les services pour un hostname.</p>
+            <p><u>Usage</u>: http://1.42.40.191:5000/get_all_service_for_host/hostname</p>
+            <p><u>Exemple</u>: http://1.42.40.191:5000/get_all_service_for_host/PARALI0511</p>
+        </li>
+        <li>
+            <h3>Method : <strong>get_all_host():</strong></h3>
+            <p><u>Definition</u>: Cette méthode retourne en sortie un json contenant la liste des hosts UP sur Nagios.</p>
+            <p><u>Usage</u>: http://1.42.40.191:5000/get_all_hosts</p>
+        </li>
+        <li>
+            <h3>Method : <strong>get_grouped_all_host():</strong></h3>
+            <p><u>Definition</u>: Cette méthode retourne en sortie un json contenant la liste des hosts UP groupés par POP sur Nagios.</p>
+            <p><u>Usage</u>: http://1.42.40.191:5000/get_grouped_all_hosts</p>
+        </li>
+    </ul>
+
+
+</body>
+</html>

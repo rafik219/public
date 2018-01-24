@@ -1,0 +1,106 @@
+---
+  # YAML format
+  # ip-label Application Linux initialisation file
+  #
+  # author: rbo
+  # version: 02/06/2017
+
+  #""""""""""""""""""""""
+  #   Adaptateur
+  #""""""""""""""""""""""
+  - Adaptateur:
+    - number: 2
+    - activate: "yes"
+    - name: "AppLinux_adapt"
+    - exec: "/usr/local/iplabel/bin/adapt_iplabel"
+    - schema:
+      - ""
+      - "lCERTIF"
+    - type_appli:
+      - [3, 14, 41, 23]
+      - [0, 5, 6, 7, 10, 11, 17, 18, 23, 30]
+    - redirect: "/dev/null"
+
+  #""""""""""""""""""""""
+  #   Traceroute
+  #""""""""""""""""""""""
+  - Traceroute:
+    - number: 20
+    - activate: "no"
+    - name: "AppLinux_trcrt"
+    - exec: "/usr/local/iplabel/bin/traceroute"
+    - schema: ""
+    - redirect: "/dev/null"
+
+  #""""""""""""""""""""""
+  #   Executeur
+  #""""""""""""""""""""""
+  - Executeur:
+    - number: 10
+    - activate: "yes"
+    - name: "AppLinux_exec"
+    - exec: "/usr/local/iplabel/bin/executeur"
+    - schema:
+      - ""
+      - ""
+      - ""
+      - ""
+      - ""
+      - ""
+      - ""
+      - ""
+      - "lCERTIF"
+      - "lAllianz"
+    - redirect: "/dev/null"
+
+  #""""""""""""""""""""""
+  #   Ping
+  #""""""""""""""""""""""
+  - Ping:
+    - number: 2
+    - activate: "yes"
+    - name: "AppLinux_ping"
+    - exec: "/usr/local/iplabel/bin/ping"
+    - schema:
+      - ""
+      - "lCERTIF"
+    - redirect: "/dev/null"
+
+  #""""""""""""""""""""""
+  #   Port
+  #""""""""""""""""""""""
+  - Port:
+    - number: 2
+    - activate: "no"
+    - name: "AppLinux_port"
+    - exec: "/usr/local/iplabel/bin/port"
+    - schema:
+      - ""
+      - "lCERTIF"
+    - redirect: "/dev/null"
+
+  #""""""""""""""""""""""
+  #     SMTP
+  #""""""""""""""""""""""
+  - Smtp:
+    - number: 2
+    - activate: "yes"
+    - name: "AppLinux_smtp"
+    - exec: "/usr/local/iplabel/bin/smtp"
+    - schema:
+      - ""
+      - "lCERTIF"
+    - redirect: "/dev/null"
+
+  #""""""""""""""""""""""
+  #     FTP
+  #""""""""""""""""""""""
+  - Ftp:
+    - number: 2
+    - activate: "yes"
+    - name: "AppLinux_port"
+    - exec: "/usr/local/iplabel/bin/ftp"
+    - schema:
+      - ""
+      - "lCERTIF"
+    - redirect: "/dev/null"

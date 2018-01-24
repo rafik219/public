@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="b5122945-c83d-4020-84ee-ecf400c263c2" name="Jenkins_Prod_2" url="http://10.42.40.241">
+        <fileTransfer host="10.42.40.241" port="22" rootFolder="/opt/iplabel" accessType="SFTP">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+          <option name="port" value="22" />
+        </fileTransfer>
+      </webServer>
+      <webServer id="5db2b134-2be1-4cc5-af23-e05c11cc9fd1" name="Nagios" url="http://10.42.40.191">
+        <fileTransfer host="10.42.40.191" port="22" rootFolder="/home/iplabel/CentreonApi" accessType="SFTP">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+          <option name="port" value="22" />
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

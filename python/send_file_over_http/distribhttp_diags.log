@@ -1,0 +1,155 @@
+2017-12-05 09:26:44,286 - Distribdiag - INFO - -----------------------------------------------------
+2017-12-05 09:26:44,286 - Distribdiag - INFO - Start execution at: 2017/12/05 09:26:44
+2017-12-05 09:26:44,286 - Distribdiag - INFO - -----------------------------------------------------
+2017-12-05 09:26:44,286 - Distribdiag - INFO - Selecting Sequential transfer mode ...
+2017-12-05 09:26:44,286 - Distribdiag - INFO - [ TH_VAI ] Select current directory 'C:\backup\vai'
+2017-12-05 09:26:44,286 - Distribdiag - INFO - [ TH_VAI ] Start dedicated thread on C:\backup\vai
+2017-12-05 09:26:44,286 - Distribdiag - INFO - [ TH_VAI ] Opening connection to: https://up-sg-001.col.ip-label.net
+2017-12-05 09:26:44,286 - Distribdiag - INFO - [ TH_VAI ] OK connection established to https://up-sg-001.col.ip-label.net
+2017-12-05 09:26:44,286 - Distribdiag - INFO - [ TH_VAI ] Count files: 17 Files on C:\backup\vai\avi
+2017-12-05 09:28:11,786 - Distribdiag - ERROR - [ TH_VAI ] When making POST request !!, cause: ('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None))
+2017-12-05 09:28:11,786 - Distribdiag - ERROR - [ TH_VAI ] Thread will die !!
+2017-12-05 09:28:11,786 - Distribdiag - INFO - End execution at: 2017/12/05 09:28:11
+2017-12-05 09:28:51,083 - Distribdiag - INFO - -----------------------------------------------------
+2017-12-05 09:28:51,083 - Distribdiag - INFO - Start execution at: 2017/12/05 09:28:51
+2017-12-05 09:28:51,083 - Distribdiag - INFO - -----------------------------------------------------
+2017-12-05 09:28:51,083 - Distribdiag - INFO - Selecting Sequential transfer mode ...
+2017-12-05 09:28:51,083 - Distribdiag - INFO - [ TH_VAI ] Select current directory 'C:\backup\vai'
+2017-12-05 09:28:51,083 - Distribdiag - INFO - [ TH_VAI ] Start dedicated thread on C:\backup\vai
+2017-12-05 09:28:51,083 - Distribdiag - INFO - [ TH_VAI ] Opening connection to: https://up-sg-001.col.ip-label.net
+2017-12-05 09:28:51,083 - Distribdiag - INFO - [ TH_VAI ] OK connection established to https://up-sg-001.col.ip-label.net
+2017-12-05 09:28:51,083 - Distribdiag - INFO - [ TH_VAI ] Count files: 17 Files on C:\backup\vai\avi
+2017-12-05 09:29:54,895 - Distribdiag - ERROR - [ TH_VAI ] When making POST request !!, cause: ('Connection aborted.', TimeoutError(10060, 'A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond', None, 10060, None))
+2017-12-05 09:29:54,895 - Distribdiag - ERROR - [ TH_VAI ] Thread will die !!
+2017-12-05 09:29:54,895 - Distribdiag - INFO - End execution at: 2017/12/05 09:29:54
+2017-12-05 09:31:51,160 - Distribdiag - INFO - -----------------------------------------------------
+2017-12-05 09:31:51,160 - Distribdiag - INFO - Start execution at: 2017/12/05 09:31:51
+2017-12-05 09:31:51,160 - Distribdiag - INFO - -----------------------------------------------------
+2017-12-05 09:31:51,164 - Distribdiag - INFO - Selecting Sequential transfer mode ...
+2017-12-05 09:31:51,164 - Distribdiag - INFO - [ TH_VAI ] Select current directory 'C:\backup\vai'
+2017-12-05 09:31:51,164 - Distribdiag - INFO - [ TH_VAI ] Start dedicated thread on C:\backup\vai
+2017-12-05 09:31:51,164 - Distribdiag - INFO - [ TH_VAI ] Opening connection to: https://up-sg-001.col.ip-label.net
+2017-12-05 09:31:51,164 - Distribdiag - INFO - [ TH_VAI ] OK connection established to https://up-sg-001.col.ip-label.net
+2017-12-05 09:31:51,164 - Distribdiag - INFO - [ TH_VAI ] Count files: 17 Files on C:\backup\vai\avi
+2017-12-05 09:31:55,192 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\avi\2287114_20170330183000_2_0.avi, Status: (True, '206.68 KB/s')
+2017-12-05 09:31:57,630 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\avi\2287114_20170322193000_2_0.avi, Status: (True, '259.21 KB/s')
+2017-12-05 09:31:58,677 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\avi\2287109_20170503090000_2_0.avi, Status: (True, '783.05 KB/s')
+2017-12-05 09:32:01,395 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\avi\2287103_20171002053000_1_0.avi, Status: (True, '491.12 KB/s')
+2017-12-05 09:32:01,661 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\avi\2343432_20171128144100_1_4.avi, Status: (True, '4.77 KB/s')
+2017-12-05 09:32:01,911 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\avi\2343432_20171128144070_1_5.avi, Status: (True, '5.07 KB/s')
+2017-12-05 09:32:02,177 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\avi\2343432_20171128144040_1_3.avi, Status: (True, '4.77 KB/s')
+2017-12-05 09:32:02,442 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\avi\2343432_20171128144007_1_0.avi, Status: (True, '4.77 KB/s')
+2017-12-05 09:32:02,692 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\avi\2343432_20171128144002_1_2.avi, Status: (True, '5.07 KB/s')
+2017-12-05 09:32:02,958 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\avi\2343432_20171128144000_1_7.avi, Status: (True, '4.77 KB/s')
+2017-12-05 09:32:03,208 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\avi\2343432_20171128144000_1_0.avi, Status: (True, '89.89 KB/s')
+2017-12-05 09:32:17,020 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\avi\1976819_20171128110900_1_5.avi, Status: (True, '301.21 KB/s')
+2017-12-05 09:32:28,942 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\avi\1976819_20171128110700_1_4.avi, Status: (True, '348.58 KB/s')
+2017-12-05 09:32:34,411 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\avi\1976819_20171128110020_1_3.avi, Status: (True, '759.91 KB/s')
+2017-12-05 09:32:38,849 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\avi\1976819_20171128110010_1_6.avi, Status: (True, '939.80 KB/s')
+2017-12-05 09:32:44,333 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\avi\1976819_20171128110001_1_2.avi, Status: (True, '759.91 KB/s')
+2017-12-05 09:32:48,505 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\avi\1976819_20171128110000_1_0.avi, Status: (True, '996.13 KB/s')
+2017-12-05 09:32:48,521 - Distribdiag - INFO - [ TH_VAI ] Count files: 25 Files on C:\backup\vai\dbg
+2017-12-05 09:32:50,583 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\dbg\1976819_20171128110000_1_0.dbg.bz2, Status: (True, '125.81 KB/s')
+2017-12-05 09:32:54,458 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\dbg\2287109_20170503090000_2_0.dbg.bz2, Status: (True, '164.95 KB/s')
+2017-12-05 09:32:58,599 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\dbg\2287103_20171002053000_1_0.dbg.bz2, Status: (True, '246.57 KB/s')
+2017-12-05 09:33:00,161 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\dbg\2287114_20170322193000_2_0.dbg.bz2, Status: (True, '298.59 KB/s')
+2017-12-05 09:33:01,989 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\dbg\2287114_20170330183000_2_0.dbg.bz2, Status: (True, '333.06 KB/s')
+2017-12-05 09:33:02,286 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\dbg\2368006_20170609221500_1_0.dbg.bz2, Status: (True, '2.20 KB/s')
+2017-12-05 09:33:02,614 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\dbg\2318958_20170319010000_1_0.dbg.bz2, Status: (True, '1.88 KB/s')
+2017-12-05 09:33:02,927 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\dbg\2343432_20171128144000_1_4.dbg.bz2, Status: (True, '6.15 KB/s')
+2017-12-05 09:33:03,224 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\dbg\2343432_20171128144000_1_0.dbg.bz2, Status: (True, '75.69 KB/s')
+2017-12-05 09:33:03,583 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\dbg\2343432_20171128143000_1_0.dbg.bz2, Status: (True, '5.35 KB/s')
+2017-12-05 09:33:03,896 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\dbg\1998826_20171128140000_1_0.dbg.bz2, Status: (True, '1.09 KB/s')
+2017-12-05 09:33:04,161 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\dbg\2343432_20171128140000_1_0.dbg.bz2, Status: (True, '7.23 KB/s')
+2017-12-05 09:33:04,427 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\dbg\2343432_20171128134000_1_0.dbg.bz2, Status: (True, '7.23 KB/s')
+2017-12-05 09:33:04,677 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\dbg\2343432_20171128133000_1_0.dbg.bz2, Status: (True, '7.68 KB/s')
+2017-12-05 09:33:04,942 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\dbg\2343432_20171128132000_1_0.dbg.bz2, Status: (True, '7.23 KB/s')
+2017-12-05 09:33:05,216 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\dbg\2343432_20171128131000_1_0.dbg.bz2, Status: (True, '7.01 KB/s')
+2017-12-05 09:33:05,474 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\dbg\1998826_20171128130000_1_0.dbg.bz2, Status: (True, '1.32 KB/s')
+2017-12-05 09:33:05,724 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\dbg\2343432_20171128125000_1_0.dbg.bz2, Status: (True, '7.68 KB/s')
+2017-12-05 09:33:05,989 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\dbg\2343432_20171128124000_1_0.dbg.bz2, Status: (True, '7.68 KB/s')
+2017-12-05 09:33:06,256 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\dbg\2343432_20171128122000_1_0.dbg.bz2, Status: (True, '7.19 KB/s')
+2017-12-05 09:33:06,505 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\dbg\2308652_20171128120000_1_0.dbg.bz2, Status: (True, '1.28 KB/s')
+2017-12-05 09:33:06,771 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\dbg\2343432_20171128120000_1_0.dbg.bz2, Status: (True, '7.23 KB/s')
+2017-12-05 09:33:07,036 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\dbg\2343432_20171128114000_1_0.dbg.bz2, Status: (True, '7.23 KB/s')
+2017-12-05 09:33:07,286 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\dbg\2343432_20171128113000_1_0.dbg.bz2, Status: (True, '7.68 KB/s')
+2017-12-05 09:33:07,552 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\dbg\2343432_20171128111000_1_0.dbg.bz2, Status: (True, '7.23 KB/s')
+2017-12-05 09:33:07,552 - Distribdiag - INFO - [ TH_VAI ] Count files: 12 Files on C:\backup\vai\hwl
+2017-12-05 09:33:07,802 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\hwl\2343432_20171128144100_1_4.hwl, Status: (True, '5.07 KB/s')
+2017-12-05 09:33:08,067 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\hwl\2343432_20171128144070_1_5.hwl, Status: (True, '5.07 KB/s')
+2017-12-05 09:33:08,333 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\hwl\2343432_20171128144040_1_3.hwl, Status: (True, '4.77 KB/s')
+2017-12-05 09:33:08,583 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\hwl\2343432_20171128144007_1_0.hwl, Status: (True, '5.07 KB/s')
+2017-12-05 09:33:08,849 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\hwl\2343432_20171128144002_1_2.hwl, Status: (True, '4.77 KB/s')
+2017-12-05 09:33:09,114 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\hwl\2343432_20171128144000_1_0.hwl, Status: (True, '4.77 KB/s')
+2017-12-05 09:33:17,161 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\hwl\1976819_20171128110900_1_5.hwl, Status: (True, '516.44 KB/s')
+2017-12-05 09:33:21,599 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\hwl\1976819_20171128110700_1_4.hwl, Status: (True, '939.86 KB/s')
+2017-12-05 09:33:27,044 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\hwl\1976819_20171128110020_1_3.hwl, Status: (True, '765.33 KB/s')
+2017-12-05 09:33:32,380 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\hwl\1976819_20171128110010_1_6.hwl, Status: (True, '780.04 KB/s')
+2017-12-05 09:33:36,317 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\hwl\1976819_20171128110001_1_2.hwl, Status: (True, '1059.63 KB/s')
+2017-12-05 09:33:41,536 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\hwl\1976819_20171128110000_1_0.hwl, Status: (True, '798.70 KB/s')
+2017-12-05 09:33:41,536 - Distribdiag - INFO - [ TH_VAI ] Count files: 17 Files on C:\backup\vai\jpg
+2017-12-05 09:33:42,661 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\jpg\2287114_20170330183000_2_0.jpg, Status: (True, '739.29 KB/s')
+2017-12-05 09:33:43,692 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\jpg\2287114_20170322193000_2_0.jpg, Status: (True, '608.75 KB/s')
+2017-12-05 09:33:44,739 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\jpg\2287109_20170503090000_2_0.jpg, Status: (True, '783.05 KB/s')
+2017-12-05 09:33:46,567 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\jpg\2287103_20171002053000_1_0.jpg, Status: (True, '736.68 KB/s')
+2017-12-05 09:33:46,817 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\jpg\2343432_20171128144100_1_4.jpg, Status: (True, '5.07 KB/s')
+2017-12-05 09:33:47,083 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\jpg\2343432_20171128144070_1_5.jpg, Status: (True, '4.77 KB/s')
+2017-12-05 09:33:47,349 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\jpg\2343432_20171128144040_1_3.jpg, Status: (True, '4.77 KB/s')
+2017-12-05 09:33:47,599 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\jpg\2343432_20171128144007_1_0.jpg, Status: (True, '5.07 KB/s')
+2017-12-05 09:33:47,864 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\jpg\2343432_20171128144002_1_2.jpg, Status: (True, '4.77 KB/s')
+2017-12-05 09:33:48,114 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\jpg\2343432_20171128144000_1_7.jpg, Status: (True, '5.07 KB/s')
+2017-12-05 09:33:48,380 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\jpg\2343432_20171128144000_1_0.jpg, Status: (True, '84.60 KB/s')
+2017-12-05 09:33:52,552 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\jpg\1976819_20171128110900_1_5.jpg, Status: (True, '999.88 KB/s')
+2017-12-05 09:34:09,786 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\jpg\1976819_20171128110700_1_4.jpg, Status: (True, '241.35 KB/s')
+2017-12-05 09:34:17,833 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\jpg\1976819_20171128110020_1_3.jpg, Status: (True, '517.45 KB/s')
+2017-12-05 09:34:22,271 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\jpg\1976819_20171128110010_1_6.jpg, Status: (True, '939.81 KB/s')
+2017-12-05 09:34:37,802 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\jpg\1976819_20171128110001_1_2.jpg, Status: (True, '267.84 KB/s')
+2017-12-05 09:34:47,146 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\jpg\1976819_20171128110000_1_0.jpg, Status: (True, '445.51 KB/s')
+2017-12-05 09:34:47,146 - Distribdiag - INFO - [ TH_VAI ] Count files: 22 Files on C:\backup\vai\pcap
+2017-12-05 09:34:48,177 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\pcap\2287114_20170330183000_2_0.pcap.bz2, Status: (True, '593.52 KB/s')
+2017-12-05 09:34:48,958 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\pcap\2287114_20170322193000_2_0.pcap.bz2, Status: (True, '600.31 KB/s')
+2017-12-05 09:34:50,005 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\pcap\2287109_20170503090000_2_0.pcap.bz2, Status: (True, '613.65 KB/s')
+2017-12-05 09:34:51,302 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\pcap\2287103_20171002053000_1_0.pcap.bz2, Status: (True, '788.02 KB/s')
+2017-12-05 09:34:51,817 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\pcap\1976819_20171128110000_1_0.pcap.bz2, Status: (True, '506.20 KB/s')
+2017-12-05 09:34:52,083 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\pcap\2343432_20171128113000_1_0.pcap.bz2, Status: (True, '8.54 KB/s')
+2017-12-05 09:34:52,333 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\pcap\2343432_20171128111000_1_0.pcap.bz2, Status: (True, '9.09 KB/s')
+2017-12-05 09:34:52,599 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\pcap\2343432_20171128125000_1_0.pcap.bz2, Status: (True, '8.48 KB/s')
+2017-12-05 09:34:52,864 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\pcap\2343432_20171128124000_1_0.pcap.bz2, Status: (True, '8.47 KB/s')
+2017-12-05 09:34:53,114 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\pcap\2343432_20171128122000_1_0.pcap.bz2, Status: (True, '9.04 KB/s')
+2017-12-05 09:34:53,380 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\pcap\2343432_20171128120000_1_0.pcap.bz2, Status: (True, '8.51 KB/s')
+2017-12-05 09:34:53,630 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\pcap\2343432_20171128114000_1_0.pcap.bz2, Status: (True, '9.09 KB/s')
+2017-12-05 09:34:53,896 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\pcap\2308652_20171128120000_1_0.pcap.bz2, Status: (True, '1.34 KB/s')
+2017-12-05 09:34:54,161 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\pcap\1998826_20171128130000_1_0.pcap.bz2, Status: (True, '1.52 KB/s')
+2017-12-05 09:34:54,411 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\pcap\2343432_20171128143000_1_0.pcap.bz2, Status: (True, '9.13 KB/s')
+2017-12-05 09:34:54,677 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\pcap\2343432_20171128140000_1_0.pcap.bz2, Status: (True, '8.60 KB/s')
+2017-12-05 09:34:54,927 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\pcap\2343432_20171128134000_1_0.pcap.bz2, Status: (True, '9.10 KB/s')
+2017-12-05 09:34:55,192 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\pcap\2343432_20171128133000_1_0.pcap.bz2, Status: (True, '8.59 KB/s')
+2017-12-05 09:34:55,458 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\pcap\2343432_20171128132000_1_0.pcap.bz2, Status: (True, '8.50 KB/s')
+2017-12-05 09:34:55,708 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\pcap\2343432_20171128131000_1_0.pcap.bz2, Status: (True, '8.98 KB/s')
+2017-12-05 09:34:55,974 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\pcap\1998826_20171128140000_1_0.pcap.bz2, Status: (True, '1.52 KB/s')
+2017-12-05 09:34:56,224 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\pcap\2343432_20171128144000_1_0.pcap.bz2, Status: (True, '76.81 KB/s')
+2017-12-05 09:34:56,224 - Distribdiag - INFO - [ TH_VAI ] Count files: 23 Files on C:\backup\vai\zip
+2017-12-05 09:34:57,271 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\zip\2287114_20170330183000_2_0.HG.zip, Status: (True, '806.47 KB/s')
+2017-12-05 09:34:58,052 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\zip\2287114_20170322193000_2_0.HG.zip, Status: (True, '803.59 KB/s')
+2017-12-05 09:34:59,099 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\zip\2287109_20170503090000_2_0.HG.zip, Status: (True, '783.05 KB/s')
+2017-12-05 09:35:00,661 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\zip\2287103_20171002053000_1_0.HG.zip, Status: (True, '854.55 KB/s')
+2017-12-05 09:35:00,927 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\zip\2343432_20171128144000_1_0_HG.zip, Status: (True, '7.23 KB/s')
+2017-12-05 09:35:01,192 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\zip\2343432_20171128144000_1_0.HG.zip, Status: (True, '84.60 KB/s')
+2017-12-05 09:35:01,474 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\zip\2343432_20171128143000_1_0_HG.zip, Status: (True, '6.83 KB/s')
+2017-12-05 09:35:02,505 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\zip\1998826_20171128140000_1_0_HG.zip, Status: (True, '0.33 KB/s')
+2017-12-05 09:35:02,802 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\zip\2343432_20171128140000_1_0_HG.zip, Status: (True, '6.47 KB/s')
+2017-12-05 09:35:03,052 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\zip\2343432_20171128134000_1_0_HG.zip, Status: (True, '7.68 KB/s')
+2017-12-05 09:35:03,302 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\zip\2343432_20171128133000_1_0_HG.zip, Status: (True, '7.68 KB/s')
+2017-12-05 09:35:03,552 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\zip\2343432_20171128132000_1_0_HG.zip, Status: (True, '7.69 KB/s')
+2017-12-05 09:35:03,802 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\zip\2343432_20171128131000_1_0_HG.zip, Status: (True, '7.68 KB/s')
+2017-12-05 09:35:04,052 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\zip\1998826_20171128130000_1_0_HG.zip, Status: (True, '1.36 KB/s')
+2017-12-05 09:35:04,302 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\zip\2343432_20171128125000_1_0_HG.zip, Status: (True, '7.68 KB/s')
+2017-12-05 09:35:04,552 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\zip\2343432_20171128124000_1_0_HG.zip, Status: (True, '7.68 KB/s')
+2017-12-05 09:35:04,802 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\zip\2343432_20171128122000_1_0_HG.zip, Status: (True, '7.68 KB/s')
+2017-12-05 09:35:05,052 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\zip\2308652_20171128120000_1_0_HG.zip, Status: (True, '1.27 KB/s')
+2017-12-05 09:35:05,302 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\zip\2343432_20171128120000_1_0_HG.zip, Status: (True, '7.68 KB/s')
+2017-12-05 09:35:05,567 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\zip\2343432_20171128114000_1_0_HG.zip, Status: (True, '7.23 KB/s')
+2017-12-05 09:35:05,817 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\zip\2343432_20171128113000_1_0_HG.zip, Status: (True, '7.68 KB/s')
+2017-12-05 09:35:06,067 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\zip\2343432_20171128111000_1_0_HG.zip, Status: (True, '7.68 KB/s')
+2017-12-05 09:35:07,067 - Distribdiag - INFO - [ TH_VAI ] Transfer OK: C:\backup\vai\zip\1976819_20171128110000_1_0_HG.zip, Status: (True, '258.22 KB/s')
+2017-12-05 09:35:07,067 - Distribdiag - INFO - End execution at: 2017/12/05 09:35:07

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="RemoteMappingsManager">
+    <list>
+      <list>
+        <remote-mappings server-id="python@ssh://iplabel@10.42.40.191:22/usr/local/bin/python2.7">
+          <settings>
+            <list>
+              <mapping local-root="$USER_HOME$/PycharmProjects/CentreonApi" remote-root="/home/iplabel/CentreonApi" />
+            </list>
+          </settings>
+        </remote-mappings>
+      </list>
+    </list>
+  </component>
+</project>
