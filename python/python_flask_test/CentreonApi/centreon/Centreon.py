@@ -233,10 +233,6 @@ class Centreon:
         self._get_xml_response(type_='all_service_for_host', search_host=search_host)
         xml_root = ElementTree.fromstring(self.centreon_xml_all_service_for_host)
         host_description = dict()
-        service_war_description = dict()
-        service_cri_description = dict()
-        service_ok_description = dict()
-        service_unk_description = dict()
         list_service_war = list()
         list_service_ok = list()
         list_service_cri = list()
@@ -245,37 +241,46 @@ class Centreon:
         host_description["count_cri_service"] = 0
         host_description["count_war_service"] = 0
         host_description["count_unk_service"] = 0
+        host_name = ""
+        one_access = True
         for elt in xml_root.findall('i'):
             host_description["count_all_service"] = elt.find('numrows').text
         for service in xml_root.findall('l'):
-            if service.find('hn').get('none') == "0":
+            service_war_description = dict()
+            service_cri_description = dict()
+            service_ok_description = dict()
+            service_unk_description = dict()
+            if service.find('hn').get('none') == "0" and one_access:
                 host_description["host_ip"] = service.find('hip').text
                 host_description["host_name"] = service.find('hnl').text
-            service_status = service.find('cs').text
-            if service_status == "WARNING":
-                host_description["count_war_service"] += 1
-                service_war_description["check_name"] = service.find('sd').text
-                service_war_description["check_status"] = service.find('cs').text
-                service_war_description["check_info"] = service.find('po').text
-                list_service_war.append(service_war_description)
-            elif service_status == "OK":
-                host_description["count_ok_service"] += 1
-                service_ok_description["check_name"] = service.find('sd').text
-                service_ok_description["check_status"] = service.find('cs').text
-                service_ok_description["check_info"] = service.find('po').text
-                list_service_ok.append(service_ok_description)
-            elif service_status == "CRITICAL":
-                host_description["count_cri_service"] += 1
-                service_cri_description["check_name"] = service.find('sd').text
-                service_cri_description["check_status"] = service.find('cs').text
-                service_cri_description["check_info"] = service.find('po').text
-                list_service_cri.append(service_cri_description)
-            elif service_status == "UNKNOWN":
-                host_description["count_unk_service"] += 1
-                service_unk_description["check_name"] = service.find('sd').text
-                service_unk_description["check_status"] = service.find('cs').text
-                service_unk_description["check_info"] = service.find('po').text
-                list_service_unk.append(service_unk_description)
+                host_name = host_description["host_name"]
+                one_access = False
+            service_status = service.find('cs').text.strip()
+            if host_name == service.find('hnl').text:
+                if service_status == "WARNING":
+                    host_description["count_war_service"] += 1
+                    service_war_description["check_name"] = service.find('sd').text
+                    service_war_description["check_status"] = service.find('cs').text
+                    service_war_description["check_info"] = service.find('po').text
+                    list_service_war.append(service_war_description)
+                elif service_status == "OK":
+                    host_description["count_ok_service"] += 1
+                    service_ok_description["check_name"] = service.find('sd').text
+                    service_ok_description["check_status"] = service.find('cs').text
+                    service_ok_description["check_info"] = service.find('po').text
+                    list_service_ok.append(service_ok_description)
+                elif service_status == "CRITICAL":
+                    host_description["count_cri_service"] += 1
+                    service_cri_description["check_name"] = service.find('sd').text
+                    service_cri_description["check_status"] = service.find('cs').text
+                    service_cri_description["check_info"] = service.find('po').text
+                    list_service_cri.append(service_cri_description)
+                elif service_status == "UNKNOWN":
+                    host_description["count_unk_service"] += 1
+                    service_unk_description["check_name"] = service.find('sd').text
+                    service_unk_description["check_status"] = service.find('cs').text
+                    service_unk_description["check_info"] = service.find('po').text
+                    list_service_unk.append(service_unk_description)
 
         host_description["service_ok"] = list_service_ok
         host_description["service_war"] = list_service_war
