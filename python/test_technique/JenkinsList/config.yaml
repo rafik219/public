@@ -1,0 +1,26 @@
+---
+  servers:
+    - id: 1
+      description: Jenkins Production Master
+      name: Jenkins_Prod1
+      url: https://jenkins.mono-project.com
+      port: 443
+      access:
+        authentication: 'No'
+        connection:
+          type: basic
+          username: ''
+          apitoken: ''
+#    - id: 2
+#      description: Jenkins Production Backup
+#      name: Jenkins_Backup
+#      url: https://jenkins.mono-project.com
+#      port: 443
+#      access:
+#        authentication: 'Yes'
+#        connection:
+#          type: basic
+#          username: test@jenkins.com
+#          apitoken: 2131s2A3244Dsqx5
+
+
