@@ -72,11 +72,10 @@ class JenkinsApi:
         request.add_header("Authorization", "Basic %s" % base64string)
         try:
             self.url_instance = urllib2.urlopen(request)
+            self.json_resp = json.load(self.url_instance)
         except urllib2.HTTPError, ex:
             print "Error during Authentication, cause: %s" % ex.code
             sys.exit(-1)
-        try:
-            self.json_resp = json.load(self.url_instance)
         except Exception as e:
             print "Failed to load Json file response :" + e.message
             # return None
