@@ -1,6 +1,6 @@
 
 Description:
------------
+------------
 
 This script is used to list all jobs on jenkins servers configured on config.yaml file.
 and get information about specific jobs name.
@@ -9,7 +9,7 @@ Python version : python3.5
 
 
 Example:
-------
+--------
 
 1/ python JenkinsList.py -h     => Get information how to use script.
 
