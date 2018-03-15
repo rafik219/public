@@ -32,11 +32,10 @@ OK_STATUS = 0
 """
 # Connexion mssql PARALI83
 """
-server = "PARALI83"
-# server = "PARALI82"
+server = "XXXXXX"
 user = "UserNagios"
-password = "/klm123"
-database = "CloudObserver_DTW"
+password = "XXXXX"
+database = "XXXXXXX"
 
 """
 # Azure credential file.
