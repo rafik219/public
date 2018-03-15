@@ -92,7 +92,7 @@ if __name__ == "__main__"	:
 				unknown_job['job_name'] = jobName
 				unknown_job['status'] = lastRunOutcome
 				unknown_job['last_run_time'] = lastRunTime.strftime("%Y-%m-%d %H:%M:%S")
-				unknown_job.append(failed_job)
+				unknown_job.append(unknown_job)
 			else:
 				if lastRunOutcome.__contains__('Fail'):
 					failed_job['job_name'] = jobName
