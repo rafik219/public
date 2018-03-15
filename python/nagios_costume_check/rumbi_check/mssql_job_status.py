@@ -67,6 +67,7 @@ if __name__ == "__main__"	:
 		failed_jobs = []
 		blocked_jobs = []
 		canceled_jobs = []
+		unknown_jobs = []
 
 		for line in result:
 			failed_job = {}
@@ -115,8 +116,8 @@ if __name__ == "__main__"	:
 		elif len(canceled_jobs) > 0:
 			print("CRITICAL : Canceled jobs detected => " + str(canceled_jobs))
 			sys.exit(CRITICAL_STATUS)
-		elif len(unknown_job) > 0:
-			print("CRITICAL : Unknown job status detected => " + str(canceled_jobs))
+		elif len(unknown_jobs) > 0:
+			print("CRITICAL : Unknown job status detected => " + str(unknown_jobs))
 			sys.exit(CRITICAL_STATUS)
 		else:
 			print("OK : All jobs end with Success !!")
