@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-##############################
+#########################################
 # rbo
 # version : 15/02/2017
 # check control chain
@@ -9,7 +9,11 @@
 # require pymssql (v.2.1.1):
 #	- pip.exe install pymssql
 # Frequence : 60 min
-##############################
+#
+# 01/08/2017: rbo compare chain with 
+#				active chain in azure database.
+#
+#########################################
 """
 
 import sys
@@ -31,7 +35,7 @@ OK_STATUS = 0
 server = "PARALI83"
 # server = "PARALI82"
 user = "UserNagios"
-password = "XXXXXXXXX"
+password = "/klm123"
 database = "CloudObserver_DTW"
 
 """
@@ -176,7 +180,8 @@ def main():
 		# print(azure_result)
 		
 		azure_active_chain = get_azure_active_chain()	
-					
+		
+		
 	except Exception as ex:
 		print("probleme lors de la connexion")
 		print("cause:", ex)	
@@ -207,9 +212,9 @@ def main():
 		# detect problem on some distribution chain
 		list_chain_with_problem = list()
 		if len(result) < len(azure_active_chain):
-			chains = [chain[0] for chain in result]
+			chains_result = [chain[0] for chain in result]
 			for active_chain  in azure_active_chain:
-				if active_chain not in chains:
+				if active_chain not in chains_result:
 					list_chain_with_problem.append(active_chain)
 						
 		if len(list_chain_with_problem) != 0:
