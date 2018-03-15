@@ -1,4 +1,4 @@
-# -*- coding: uft-8 -*-
+# -*- coding: iso-8859-15 -*-
 """
 #############################
 # rbo
@@ -10,6 +10,7 @@
 #	- pip.exe install pymssql
 #
 # rbo: 06/12/2017 update 
+# rbo: 15/03/2018 unknow job status added
 #
 #############################
 """
@@ -22,11 +23,10 @@ CRITICAL_STATUS = 2
 WARNING_STATUS = 1
 OK_STATUS = 0
 
-server = "PARALI83"
-# server = "PARALI82"
+server = "XXXXXXX"
 user = "UserNagios"
-password = "XXXXXXXXX"
-database = "ReportPortalNew"
+password = "XXXXXXXX"
+database = "XXXXXXXXXX"
 
 result = ""
 
@@ -72,6 +72,7 @@ if __name__ == "__main__"	:
 			failed_job = {}
 			blocked_job = {}
 			canceled_job = {}
+			unknown_job = {}
 			jobName = line[0]
 			currentStatus = line[2]
 			lastRunTime = line[4]
@@ -87,17 +88,23 @@ if __name__ == "__main__"	:
 					blocked_job['last_run_time'] = lastRunTime.strftime("%Y-%m-%d %H:%M:%S")
 					blocked_jobs.append(blocked_job)
 
-			if lastRunOutcome.__contains__('Fail'):
-				failed_job['job_name'] = jobName
-				failed_job['status'] = lastRunOutcome
-				failed_job['last_run_time'] = lastRunTime.strftime("%Y-%m-%d %H:%M:%S")
-				failed_jobs.append(failed_job)
+			if lastRunOutcome is None:
+				unknown_job['job_name'] = jobName
+				unknown_job['status'] = lastRunOutcome
+				unknown_job['last_run_time'] = lastRunTime.strftime("%Y-%m-%d %H:%M:%S")
+				unknown_job.append(failed_job)
+			else:
+				if lastRunOutcome.__contains__('Fail'):
+					failed_job['job_name'] = jobName
+					failed_job['status'] = lastRunOutcome
+					failed_job['last_run_time'] = lastRunTime.strftime("%Y-%m-%d %H:%M:%S")
+					failed_jobs.append(failed_job)
 
-			if lastRunOutcome.__contains__('Cancel'):
-				canceled_job['job_name'] = jobName
-				canceled_job['status'] = lastRunOutcome
-				canceled_job['last_run_time'] = lastRunTime.strftime("%Y-%m-%d %H:%M:%S")
-				canceled_jobs.append(canceled_job)
+				if lastRunOutcome.__contains__('Cancel'):
+					canceled_job['job_name'] = jobName
+					canceled_job['status'] = lastRunOutcome
+					canceled_job['last_run_time'] = lastRunTime.strftime("%Y-%m-%d %H:%M:%S")
+					canceled_jobs.append(canceled_job)
 
 		if len(failed_jobs) > 0:
 			print("CRITICAL : Failed jobs detected => " + str(failed_jobs))
@@ -107,6 +114,9 @@ if __name__ == "__main__"	:
 			sys.exit(CRITICAL_STATUS)
 		elif len(canceled_jobs) > 0:
 			print("CRITICAL : Canceled jobs detected => " + str(canceled_jobs))
+			sys.exit(CRITICAL_STATUS)
+		elif len(unknown_job) > 0:
+			print("CRITICAL : Unknown job status detected => " + str(canceled_jobs))
 			sys.exit(CRITICAL_STATUS)
 		else:
 			print("OK : All jobs end with Success !!")
