@@ -1,7 +1,7 @@
 {
 	"from" : "production@ip-label.com",
-	"to" : "rbo@ip-label.com",
-	"cc" : "rbo@ip-label.com",
+	"to" : "xxx@ip-label.com",
+	"cc" : "xxx@ip-label.com",
 	"mail_subject" : "7a845000-9a11-4471-8dc3-72a252a3ad76 LWM - HSBC FR Public Web site",    
 	"mail_content" : "key=7a845000-9a11-4471-8dc3-72a252a3ad76 \n severity=Critical \n object=msgType \n text=Alerte noire ip-label via xmatters \n application=LWM - HSBC FR Public Web site"
 }
