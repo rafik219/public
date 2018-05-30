@@ -1,0 +1,8 @@
+{
+	"ws_server" : "ws.ip-label.net",
+    "smtp_server" : "0.0.0.0",
+    "smtp_port" : 25,     
+    "archive_file_name" : "archive.db",    
+    "ws_methode_name" : "Get_Current_Alarms_Per_Monitor",
+    "archive_name" : "archive.db"
+}

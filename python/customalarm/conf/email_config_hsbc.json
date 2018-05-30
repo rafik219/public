@@ -1,0 +1,7 @@
+{
+	"from" : "production@ip-label.com",
+	"to" : "xxx@ip-label.com",
+	"cc" : "xxx@ip-label.com",
+	"mail_subject" : "7a8Q5000-9a11-4471-xxsdz&1-142sq LWM - HSBC FR Public Web site",    
+	"mail_content" : "key=dzq14-9a11-4471-8dc3-ssq45 \n severity=Critical \n object=msgType \n text=Alerte noire ip-label via xmatters \n application=LWM - HSBC FR Public Web site"
+}
