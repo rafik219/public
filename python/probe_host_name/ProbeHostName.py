@@ -28,7 +28,7 @@ import argparse
 
 
 def usage():
-    print("""usage: ProbHostName_v1.py [-h] [--contrat CONTRAT [CONTRAT ...] | --idclient IDCLIENT [IDCLIENT ...]] --run {yes,no}
+    print("""usage: %s [-h] [--contrat CONTRAT [CONTRAT ...] | --idclient IDCLIENT [IDCLIENT ...]] --run {yes,no}
                 
                 Script Usage:
 
@@ -36,7 +36,7 @@ def usage():
                     -h, --help                            show this help message and exit
                     --contrat CONTRAT [CONTRAT ...]       List of Contrat ID or All
                     --idclient IDCLIENT [IDCLIENT ...]    Client ID
-                    --run {yes,no}                        Yes: to run , No: to display enabled contrat""")  
+                    --run {yes,no}                        Yes: to run , No: to display enabled contrat""" % sys.argv[0])  
     sys.exit(0)
     
     
