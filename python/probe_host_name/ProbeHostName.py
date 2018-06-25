@@ -5,7 +5,7 @@
 # @uthor: rbo
 # class utulity: update Prob HostName on dtm script 
 # version: 30/05/2018
-#
+#          25/26/2018 add logging
 
 import sys
 import zipfile
@@ -24,19 +24,22 @@ import cx_Oracle
 from time import sleep
 import argparse
 
+import logging
+import logging.handlers
 
 
 
 def usage():
-    print("""usage: %s [-h] [--contrat CONTRAT [CONTRAT ...] | --idclient IDCLIENT [IDCLIENT ...]] --run {yes,no}
+    print("""usage: %s [-h] [--idcontrat CONTRAT [CONTRAT ...] | --idclient IDCLIENT [IDCLIENT ...]] --run {yes,no}
                 
                 Script Usage:
 
                 optional arguments:
                     -h, --help                            show this help message and exit
-                    --contrat CONTRAT [CONTRAT ...]       List of Contrat ID or All
+                    --idcontrat CONTRAT [CONTRAT ...]       List of Contrat ID or All
                     --idclient IDCLIENT [IDCLIENT ...]    Client ID
-                    --run {yes,no}                        Yes: to run , No: to display enabled contrat""" % sys.argv[0])  
+                    --run {yes,no}                        Yes: to run,
+                                                          No: to display enabled contrat""" % sys.argv[0])  
     sys.exit(0)
     
     
@@ -49,7 +52,8 @@ class ExtractXmlContrat(object):
     ADD_HOSTNAME_LINE = "scen.addMessage('Probe: ' + System.Environment.GetEnvironmentVariable('computername'))"
     TMP_DIR = "/opt/iplabel/tmp"
         
-    def __init__(self, idclient=None, idcontrat=None):
+    def __init__(self, idclient=None, idcontrat=None, logger=None):
+        self.logger = logger or logging.getLogger(__name__)
         self.__oracle = Oracle()
         self.xml_contrat = []     
         self.current_dir = os.path.dirname(os.path.realpath(__file__))           
@@ -82,7 +86,7 @@ class ExtractXmlContrat(object):
                                     LEFT JOIN descriptioncontrat d ON p.IDCONTRAT = d.IDCONTRAT AND d.TYPEATTRIBUTCONTRAT = 282 AND d.VALEURATTRIBUT = 1
                                     WHERE p.TYPEAPPLICATION = 41 AND d.idcontrat IS NULL 
                                     ORDER BY c.IDCLIENT"""        
-        print('Connect to Oracle database')
+        self.logger.info('Connect to Oracle database')
         self.__oracle._connect()
         self.xml_contrat = self.__oracle.execute_select_query(_request)
         # !!! self.__oracle._close() # we need to close after processing
@@ -91,14 +95,14 @@ class ExtractXmlContrat(object):
     def extract_filtered_tzip_contrat(self, directory=None):
         
         tzip_without_hostname = []
-        
+        path = ""
         if directory is not None:
             path = os.path.join(ExtractXmlContrat.TMP_DIR, directory)
             if not os.path.exists(path):
                 os.makedirs(path)
-                print("Directory created : %s" % path)
+                self.logger.info("Directory created : %s" % path)
             else:
-                print("Path already exist : %s" % path)
+                self.logger.info("Path already exist : %s" % path)
         else:
             path = ExtractXmlContrat.TMP_DIR
         
@@ -108,7 +112,7 @@ class ExtractXmlContrat(object):
             i += 1
             tzip_without_hostname_info = {}
             
-            print("\n[%s] ------- Select Contrat: %s, idclient: %s ---------" % (i, idcontrat, idclient))  
+            self.logger.info("[%s] ------- Select Contrat: %s, idclient: %s ---------" % (i, idcontrat, idclient))  
             
             try:
                 current_xml = xml_content.read()
@@ -118,7 +122,7 @@ class ExtractXmlContrat(object):
                 tmp_filename = "%s_%s.zip" % (idclient, idcontrat)
                 tmp_file_path = os.path.join(path, tmp_filename)
                 
-                print("Extracting zip file: %s" % tmp_file_path)
+                self.logger.info("Extracting zip file: %s" % tmp_file_path)
                 with open(tmp_file_path, 'wb') as tmp_file:
                     tmp_file.write(decode_zip_file)
                     
@@ -126,14 +130,14 @@ class ExtractXmlContrat(object):
                     zip_file = zipfile.ZipFile(tmp_file_path, mode='r')
                     
                     if 'run.py' in zip_file.namelist():
-                        print("Reading 'run.py' from %s" % tmp_file_path)
+                        self.logger.info("Reading 'run.py' from %s" % tmp_file_path)
                         runpy = zip_file.read('run.py')
                         runpy_encoding = chardet.detect(runpy).get('encoding')
                         runpy_utf8 = runpy.decode(runpy_encoding).encode('UTF-8')
                         
-                        print("Check existing Hostname on run.py")
+                        self.logger.info("Check existing Hostname on run.py")
                         if runpy_utf8.find(ExtractXmlContrat.ADD_HOSTNAME_LINE) == -1 and runpy_utf8.find(ExtractXmlContrat.FIND_HOSTNAME_LINE) == -1:
-                            print('(+) Hostname code not found on run.py, we need update it on : %s' % tmp_file_path)
+                            self.logger.info('(+) Hostname code not found on run.py, we need update it on : %s' % tmp_file_path)
                             tzip_without_hostname_info['idclient'] = idclient
                             tzip_without_hostname_info['idcontrat'] = idcontrat
                             tzip_without_hostname_info['xml'] = current_xml
@@ -141,17 +145,28 @@ class ExtractXmlContrat(object):
                             tzip_without_hostname_info['zip_file_path'] = tmp_file_path
                             tzip_without_hostname.append(tzip_without_hostname_info)
                         else:
-                            print("(-) Hostname already exist, we delete zip file: %s" % tmp_file_path)
+                            self.logger.info("(-) Hostname already exist, we delete zip file: %s" % tmp_file_path)
                             zip_file.close()
-                            os.remove(tmp_file_path)
+                            try:
+                                os.remove(tmp_file_path)                                
+                            except OSError, ex:
+                                self.logger.error("Error: During removing tmp file, cause: %s" % ex)
                     else:
-                        print("File 'run.py' not found on %s" % tmp_file_path)
+                        self.logger.error("File 'run.py' not found on %s" % tmp_file_path)
                     zip_file.close()
                 else:
-                    print('Error: during extraction, %s not found' % tmp_file_path)
+                    self.logger.error('Error: during extraction, %s not found' % tmp_file_path)
                     
             except Exception, ex:                
-                print("Error: during processing extaract ! idcontrat: %s idclient: %s, cause: %s" % (idcontrat, idclient, ex))
+                self.logger.error("Error: during processing extaract ! idcontrat: %s idclient: %s, cause: %s" % (idcontrat, idclient, ex))
+        
+        if path != ExtractXmlContrat.TMP_DIR:
+            if len(os.listdir(path)) == 0:
+                try:
+                    os.removedirs(path)
+                    self.logger.info("Deleting Emepty directory: %s" % path)
+                except OSError, ex:
+                    self.logger.error("Error: During deleting directory: %s, cause: %s" % (path, ex))
                 
         return tzip_without_hostname
 
@@ -162,7 +177,7 @@ class ExtractXmlContrat(object):
         
         for zip in zips:
             updated_zip_temp = {}
-            print("\nUpdate 'run.py' on Contrat: %s, Client: %s" % (zip.get('idcontrat'), zip.get('idclient')))
+            self.logger.info("Update 'run.py' on Contrat: %s, Client: %s" % (zip.get('idcontrat'), zip.get('idclient')))
             zf_origin = zipfile.ZipFile(zip.get('zip_file_path'), mode='r')            
             runpy_extract_path = zf_origin.extract('run.py', os.path.join(ExtractXmlContrat.TMP_DIR, 'tmp'))            
             encoding = chardet.detect(open(runpy_extract_path).read()).get('encoding')          
@@ -191,7 +206,7 @@ class ExtractXmlContrat(object):
                     added_line = 2
                                    
             except ValueError, ex:
-                print("Error: during insertion on run.py, mission: %s, cause: %s" %(zip.get('idcontrat'), ex))
+                self.logger.info("Error: during insertion on run.py, mission: %s, cause: %s" %(zip.get('idcontrat'), ex))
             
             while i < len(runpy_list_strip[index:]):
                 line = runpy_list_strip[index:][i].encode('UTF-8')
@@ -205,7 +220,7 @@ class ExtractXmlContrat(object):
                         runpy_list.insert(i + index + 2 + added_line, insert_line_hostname)
                         break
                     except ValueError, ex:
-                        print("Error : During search 'scen.startStep' on idcontrat : %s for idclient : %s, cause: %s" %(zip.get('idcontrat'), zip.get('idclient'), ex))
+                        self.logger.error("Error : During search 'scen.startStep' on idcontrat : %s for idclient : %s, cause: %s" %(zip.get('idcontrat'), zip.get('idclient'), ex))
                         break
                 i += 1
                         
@@ -232,10 +247,10 @@ class ExtractXmlContrat(object):
                 updated_zip_temp['zip_file_path'] = new_zf_path
                 updated_zip_list.append(updated_zip_temp)
                 
-                print("-> Success: run.py updated ! %s" % zip.get('idcontrat'))
+                self.logger.info("-> Success: run.py updated ! %s" % zip.get('idcontrat'))
                 
             except Exception, ex:
-                print("-> Error: during creating new zip file, cause: %s" % ex)
+                self.logger.error("-> Error: during creating new zip file, cause: %s" % ex)
             
             # delete temporary files
             try:
@@ -243,7 +258,7 @@ class ExtractXmlContrat(object):
                 if purge_tmp_file:
                     os.remove(zip.get('zip_file_path'))
             except:
-                print("-> Error: during purging temporary files, cause: %s" % ex)
+                self.logger.error("-> Error: during purging temporary files, cause: %s" % ex)
                 
         return updated_zip_list
 
@@ -251,16 +266,16 @@ class ExtractXmlContrat(object):
     def display(self):
         if len(self.xml_contrat) != 0:
             for contrat in self.xml_contrat:
-                print("idClient : %s -> idContrat: %s" % (contrat[0], contrat[1]))
+                self.logger.info("idClient : %s -> idContrat: %s" % (contrat[0], contrat[1]))
         else:
             if self.idclient:
-                print("No enabled contrat found for this idclient : %s" % self.idclient)
+                self.logger.info("No enabled contrat found for this idclient : %s" % self.idclient)
             elif self.idcontrat:
-                print("No enabled contrat found for this idcontrat : %s" % self.idcontrat)
+                self.logger.info("No enabled contrat found for this idcontrat : %s" % self.idcontrat)
 
     
     def close(self):
-        print("Close connection from Oracle database")  
+        self.logger.info("Close connection from Oracle database")  
         self.__oracle._close() 
      
 
@@ -270,9 +285,12 @@ class RegenerateXmlContrat(object):
         
     CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
     TMP_DIR = "/opt/iplabel/tmp"
-        
-    @staticmethod
-    def regenerate_xml_file(new_zips, zips, purge_tmp_file=False):
+    
+    def __init__(self, logger=None):
+        self.logger = logger or logging.getLogger(__name__)
+      
+    
+    def regenerate_xml_file(self, new_zips, zips, purge_tmp_file=False):
         regenerated_xml = []        
         for nzip in new_zips:
             nzip_idmission = nzip.get('idcontrat')
@@ -298,36 +316,35 @@ class RegenerateXmlContrat(object):
                         try:
                             os.remove(nzip.get('zip_file_path'))
                         except OSError, ex:
-                            print("Error: during deleting : %s, cause: %s" % (nzip.get('zip_file_path'), ex))
+                            self.logger.error("Error: during deleting : %s, cause: %s" % (nzip.get('zip_file_path'), ex))
                     
             except Exception, ex:
-                print("Error: during regenerating xml file for this mission: %s, cause: %s" %(nzip_idmission, ex))
+                self.logger.error("Error: during regenerating xml file for this mission: %s, cause: %s" %(nzip_idmission, ex))
         
         return regenerated_xml
 
-
-    @staticmethod
-    def create_w20m_file(regenerated_xml,  directory=None):
+    
+    def create_w20m_file(self, regenerated_xml,  directory=None):
         xmlFiles = []
         if len(regenerated_xml) > 0:
             if directory is not None:
                 directory = os.path.join(RegenerateXmlContrat.TMP_DIR, directory)
                 if not os.path.exists(directory):
                     os.makedirs(directory)
-                    print("Directory created : %s" % directory)
+                    self.logger.info("Directory created : %s" % directory)
                 else:
-                    print("Path already exist : %s" % directory)
+                    self.logger.info("Path already exist : %s" % directory)
             else:
                 directory = RegenerateXmlContrat.TMP_DIR         
             
-            print("Create .w20m files:")
+            self.logger.info("Create .w20m files:")
             
             for elt in regenerated_xml:
                 filename = "%s_%s.w20m" % (elt.get('idclient'), elt.get('idcontrat'))  
                 file_path = os.path.join(directory, filename)         
                 with open(file_path, "w") as f:
                     f.write(elt.get('xml'))
-                    print("-> file created: %s !!" % filename)
+                    self.logger.info("-> file created: %s !!" % filename)
                     xmlFiles.append(file_path)               
         return xmlFiles
 
@@ -335,14 +352,15 @@ class RegenerateXmlContrat(object):
 
 class UpdateXmlContrat(object):
     """class to update new Xml on Oracle database, with restarting contrat """
-    def __init__(self):
+    def __init__(self, logger=None):
+        self.logger = logger or logging.getLogger(__name__)
         self.__oracle = Oracle(mode="admin")
         self.__oracle._connect()
         # self.__oracle._close()
     
     def update_xml(self, new_zips):                
         for nzip in new_zips:
-            xml_content_clob = nzip.get('xml')  
+            xml_content_clob = nzip.get('xml')
             new_xml_clob = self.__oracle.cursor.var(cx_Oracle.CLOB)
             new_xml_clob.setvalue(0, xml_content_clob)
             
@@ -357,7 +375,7 @@ class UpdateXmlContrat(object):
                                             AND TYPEAPPLICATION = 41""", parametreapp = new_xml_clob
                                                                        , idcontrat = idcontrat_var  )
             self.__oracle.connection.commit()
-            print("Success : Update idcontrat %s !!" % idcontrat) 
+            self.logger.info("Success : Update idcontrat %s !!" % idcontrat) 
         
         # self.__oracle._close()
     
@@ -376,10 +394,10 @@ class UpdateXmlContrat(object):
         idlogin_var = self.__oracle.cursor.var(cx_Oracle.STRING)
         idlogin_var.setvalue(0, idlogin)
         try:
-            print("-> (-) Suspend contrat : %s" % idcontrat)
+            self.logger.info("-> (-) Suspend contrat : %s" % idcontrat)
             self.__oracle.cursor.callproc("APICONTRAT.SuspendreContrat", [idcontrat_var, idlogin_var])
         except Exception, ex:
-            print("Error: during suspending contrat : %s, cause: %s" %(idcontrat, ex))
+            self.logger.error("Error: during suspending contrat : %s, cause: %s" %(idcontrat, ex))
     
     def __resume_contrat(self, idcontrat, idlogin):
         idcontrat_var = self.__oracle.cursor.var(cx_Oracle.NUMBER)
@@ -387,10 +405,10 @@ class UpdateXmlContrat(object):
         idlogin_var = self.__oracle.cursor.var(cx_Oracle.STRING)
         idlogin_var.setvalue(0, idlogin)
         try:
-            print("-> (+) resume contrat : %s" % idcontrat)
+            self.logger.info("-> (+) Resume contrat : %s" % idcontrat)
             self.__oracle.cursor.callproc("APICONTRAT.ReprendreContrat", [idcontrat_var, idlogin_var])
         except Exception, ex:
-            print("Error: during resuming contrat : %s, cause: %s" %(idcontrat, ex))
+            self.logger.error("Error: during resuming contrat : %s, cause: %s" %(idcontrat, ex))
     
 
 
@@ -398,7 +416,7 @@ def main():
     
     parser = argparse.ArgumentParser(description="Script Usage:")    
     group = parser.add_mutually_exclusive_group()
-    group.add_argument("--contrat", action="store", dest="contrat", nargs='+', help="List of Contrat ID or All", type=str.lower)
+    group.add_argument("--idcontrat", action="store", dest="contrat", nargs='+', help="List of Contrat ID or All", type=str.lower)
     group.add_argument("--idclient", action="store", dest="idclient", type=int, nargs='+', help="Client ID")
     parser.add_argument("--run", action="store", dest="run", nargs=1, help="Yes: to run , No: to display enabled contrat",
                          choices=('yes', 'no'), required=True, type=str.lower)
@@ -424,66 +442,98 @@ def main():
             if "all" in contrat:
                 contrat.remove('all')                
     
+    rootpath = os.getenv('PYTHONPATH')
+    if rootpath is None:
+        rootpath = "/opt/iplabel/script"
+    
+    log_path = os.path.join(os.path.dirname(rootpath), "log")      
+     
+    if not os.path.exists(log_path):
+        try:
+            os.makedirs(log_path)
+        except Exception, ex:
+            raise Exception("Error: c'ant create log directory: %s, cause: %s" %(rootpath, ex))
+                 
+    log_file_name = "{0}.log".format(os.path.basename(sys.argv[0]).split('.')[0])    
+    log_file_path = os.path.join(log_path, log_file_name)
+    
+    logformater = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    
+    logger = logging.getLogger("ProbeHostName")
+    logger.setLevel(logging.INFO)
+    
+    fileHandler = logging.FileHandler(log_file_path)
+    fileHandler = logging.handlers.RotatingFileHandler(log_file_path, mode='a', maxBytes=2000000, backupCount=2)
+    fileHandler.setFormatter(logformater)
+    logger.addHandler(fileHandler)
+    
+    consoleHander = logging.StreamHandler()
+    consoleHander.setFormatter(logformater)
+    logger.addHandler(consoleHander)
+    
+    
+    
     if contrat is not None:
-        print("#===================  +  ======================#")
+        logger.info("#===================  +  ======================#")
         if run == "yes":            
             tmpdir = "ProbeHostName_contrats_%s" % datetime.now().strftime("%Y%m%d_%H%M%S")
-            extractor = ExtractXmlContrat(idcontrat=contrat)            
+            extractor = ExtractXmlContrat(idcontrat=contrat, logger=logger)            
             zips = extractor.extract_filtered_tzip_contrat(directory=tmpdir)
             new_zips = extractor.update_runpy(zips)
             extractor.close()
             
-            new_xml = RegenerateXmlContrat.regenerate_xml_file(new_zips, zips)
+            regenerator = RegenerateXmlContrat(logger=logger)
+            new_xml = regenerator.regenerate_xml_file(new_zips, zips)
             
-            updater = UpdateXmlContrat()
+            updater = UpdateXmlContrat(logger=logger)
             updater.update_xml(new_xml)
             
             for idcont in [x.get('idcontrat') for x in new_xml]:
-                print("Restart idcontrat: %s" % x.get('idcontrat'))
+                logger.info("Restart idcontrat: %s" % x.get('idcontrat'))
                 # ipl599 -> id ordonnanceur account (see personne table on DTM databases)
                 updater.restart_contrat(idcont, "ipl599", timeout=2)          
             updater.close()
         
         elif run == "no":            
-            extrator = ExtractXmlContrat(idcontrat=contrat)        
+            extrator = ExtractXmlContrat(idcontrat=contrat, logger=logger)
             extrator.display()
             extrator.close()
                         
-        print("#==============================================#")
+        logger.info("#==============================================#")
     
     if idclients is not None:    
         if run == "yes":
             for idclient in idclients: 
-                print("#==================  %s =======================#" % idclient)        
-                extrator = ExtractXmlContrat(idclient=idclient)
+                logger.info("#==================  %s =======================#" % idclient)        
+                extrator = ExtractXmlContrat(idclient=idclient, logger=logger)
                 zips = extrator.extract_filtered_tzip_contrat(directory=str(idclient))
                 # print zips
                 new_zips = extrator.update_runpy(zips)
                 extrator.close()
-                # gen_xml = RegenerateXmlContrat()
-                reg_xml = RegenerateXmlContrat.regenerate_xml_file(new_zips, zips)     
+                
+                regenerator = RegenerateXmlContrat(logger=logger)
+                reg_xml = regenerator.regenerate_xml_file(new_zips, zips)     
                  
-                RegenerateXmlContrat.create_w20m_file(reg_xml, directory=str(idclient))
+                regenerator.create_w20m_file(reg_xml, directory=str(idclient))
                  
-                updater = UpdateXmlContrat()
-                    
+                updater = UpdateXmlContrat(logger=logger)                    
                 updater.update_xml(reg_xml)
                  
                 for idcont in [x.get('idcontrat') for x in reg_xml]:
-                    print("Restart idcontrat: %s" % x.get('idcontrat'))
+                    logger.info("Restart idcontrat: %s" % x.get('idcontrat'))
                     # ipl599 -> id ordonnanceur account (see personne table on DTM databases)
-                    updater.restart_contrat(idcont, "ipl599", timeout=2)            
-                
+                    updater.restart_contrat(idcont, "ipl599", timeout=2)          
                 updater.close()
-                print("#=================================================#")
+                
+                logger.info("#=================================================#")
                 
         elif run == "no":
             for idclient in idclients: 
-                print("#===================  %s ======================#" % idclient)
-                extrator = ExtractXmlContrat(idclient=idclient)        
+                logger.info("#===================  %s ======================#" % idclient)
+                extrator = ExtractXmlContrat(idclient=idclient, logger=logger)        
                 extrator.display()
                 extrator.close()
-                print("#=================================================#")
+                logger.info("#=================================================#")
   
 if __name__ == "__main__":
     main()
