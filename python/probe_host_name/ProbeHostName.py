@@ -459,7 +459,7 @@ def main():
     
     logformater = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
     
-    logger = logging.getLogger("ProbeHostName")
+    logger = logging.getLogger(__name__)
     logger.setLevel(logging.INFO)
     
     fileHandler = logging.FileHandler(log_file_path)
@@ -477,15 +477,15 @@ def main():
         logger.info("#===================  +  ======================#")
         if run == "yes":            
             tmpdir = "ProbeHostName_contrats_%s" % datetime.now().strftime("%Y%m%d_%H%M%S")
-            extractor = ExtractXmlContrat(idcontrat=contrat, logger=logger)            
+            extractor = ExtractXmlContrat(idcontrat=contrat)            
             zips = extractor.extract_filtered_tzip_contrat(directory=tmpdir)
             new_zips = extractor.update_runpy(zips)
             extractor.close()
             
-            regenerator = RegenerateXmlContrat(logger=logger)
+            regenerator = RegenerateXmlContrat()
             new_xml = regenerator.regenerate_xml_file(new_zips, zips)
             
-            updater = UpdateXmlContrat(logger=logger)
+            updater = UpdateXmlContrat()
             updater.update_xml(new_xml)
             
             for idcont in [x.get('idcontrat') for x in new_xml]:
@@ -495,7 +495,7 @@ def main():
             updater.close()
         
         elif run == "no":            
-            extrator = ExtractXmlContrat(idcontrat=contrat, logger=logger)
+            extrator = ExtractXmlContrat(idcontrat=contrat)
             extrator.display()
             extrator.close()
                         
@@ -505,18 +505,18 @@ def main():
         if run == "yes":
             for idclient in idclients: 
                 logger.info("#==================  %s =======================#" % idclient)        
-                extrator = ExtractXmlContrat(idclient=idclient, logger=logger)
+                extrator = ExtractXmlContrat(idclient=idclient)
                 zips = extrator.extract_filtered_tzip_contrat(directory=str(idclient))
                 # print zips
                 new_zips = extrator.update_runpy(zips)
                 extrator.close()
                 
-                regenerator = RegenerateXmlContrat(logger=logger)
+                regenerator = RegenerateXmlContrat()
                 reg_xml = regenerator.regenerate_xml_file(new_zips, zips)     
                  
                 regenerator.create_w20m_file(reg_xml, directory=str(idclient))
                  
-                updater = UpdateXmlContrat(logger=logger)                    
+                updater = UpdateXmlContrat()                    
                 updater.update_xml(reg_xml)
                  
                 for idcont in [x.get('idcontrat') for x in reg_xml]:
@@ -530,7 +530,7 @@ def main():
         elif run == "no":
             for idclient in idclients: 
                 logger.info("#===================  %s ======================#" % idclient)
-                extrator = ExtractXmlContrat(idclient=idclient, logger=logger)        
+                extrator = ExtractXmlContrat(idclient=idclient)        
                 extrator.display()
                 extrator.close()
                 logger.info("#=================================================#")
