@@ -1,0 +1,13 @@
+<disthttp>
+    <connection>
+		<credentials login="xxxxx" password="xxxxxx"/>
+		<server addr="https://xxxx.x.ip-label.net" port="443"/>
+		<endpoint filename="upload_xx.php"/>
+    </connection>
+    <diags>
+		<directories list="jpg txt har dbg zip hwl avi pcap"/>
+		<retention days="30"/>
+		<transfermode threshold="500"/>
+		<logging level="warning"/>
+    </diags>
+</disthttp>
