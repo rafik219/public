@@ -6,6 +6,8 @@
 # utility:   ditrib HTTP diag
 # rbo:       06/07/2018 
 #            updating : adding config file
+# rbo:       12/07/2018
+#            updating: add resize zip file
 #**************************
 
 from threading import Thread
@@ -21,6 +23,7 @@ import bz2
 import glob
 import time
 import xml.dom.minidom
+import zipfile
 
 
 class BaseConfig:
@@ -37,51 +40,140 @@ class BaseConfig:
         return cls._instances
    
     def __init__(self):
-        self.config = BaseConfig.load_config()        
-        print(self.config, id(self))
-        
+        self.config = BaseConfig.load_config()      
+                
     @staticmethod
     def load_config():
         config = {}        
         if not os.path.exists(BaseConfig.CONFIG_FILE_PATH):
             raise Exception("{0} File not found !!".format(BaseConfig.CONFIG_FILE_PATH))
         
-        etree = xml.dom.minidom.parse(BaseConfig.CONFIG_FILE_PATH)
-        
-        config['login']         = etree.getElementsByTagName('credentials')[0].getAttribute('login')
-        config['password']      = etree.getElementsByTagName('credentials')[0].getAttribute('password')
-        config['server']        = etree.getElementsByTagName('server')[0].getAttribute('addr')
-        config['port']          = etree.getElementsByTagName('server')[0].getAttribute('port')
-        config['endpoint']      = etree.getElementsByTagName('endpoint')[0].getAttribute('filename')
-        config['directories']   = etree.getElementsByTagName('directories')[0].getAttribute('list')
-        config['retention']     = etree.getElementsByTagName('retention')[0].getAttribute('days')
-        config['transfermode']  = etree.getElementsByTagName('transfermode')[0].getAttribute('threshold')
-        config['loglevel']      = etree.getElementsByTagName('logging')[0].getAttribute('level')
+        try:
+            etree = xml.dom.minidom.parse(BaseConfig.CONFIG_FILE_PATH)
+                        
+            config['login']         = etree.getElementsByTagName('credentials')[0].getAttribute('login')
+            config['password']      = etree.getElementsByTagName('credentials')[0].getAttribute('password')
+            config['server']        = etree.getElementsByTagName('server')[0].getAttribute('addr')
+            config['port']          = etree.getElementsByTagName('server')[0].getAttribute('port')
+            config['endpoint']      = etree.getElementsByTagName('endpoint')[0].getAttribute('filename')
+            config['directories']   = etree.getElementsByTagName('directories')[0].getAttribute('list')
+            config['retention']     = etree.getElementsByTagName('retention')[0].getAttribute('days')
+            config['transfermode']  = etree.getElementsByTagName('transfermode')[0].getAttribute('threshold')
+            config['loglevel']      = etree.getElementsByTagName('logging')[0].getAttribute('level')                
+            config['zip_max_size']  = etree.getElementsByTagName('resize_zip')[0].getAttribute('zip_max_size')
+            config['zip_resizign']  = etree.getElementsByTagName('resize_zip')[0].getAttribute('enable')
+            config['zip_nb_ips']    = etree.getElementsByTagName('resize_zip')[0].getAttribute('image_per_second')
+                   
+        except Exception as ex:
+            raise Exception("During parsing {0} configuration file, cause: {1}".format(BaseConfig.CONFIG_FILE_PATH, ex))
         
         return config
+
+
+class ZipFileResizer:
+    """ class to resize zip file if size is great then defined value """
+    _instances = None
+        
+    def __new__(cls, *args, **kwargs):
+        if not cls._instances:
+            cls._instances = object.__new__(ZipFileResizer)
+        return cls._instances
     
+    def __init__(self):      
+        self.logger = logging.getLogger(__name__)
+        self.zf_nb_ips = BaseConfig().config.get('zip_nb_ips').lower()
+        self.do_resizing = BaseConfig().config.get('zip_resizign').lower()
+        self.zf_max_size = BaseConfig().config.get('zip_max_size').lower()   
+            
+    def resize_zip_file(self, zip_file):            
+            """ resize zip file if: size is great then zip_max_file and enable parameter is yes """                 
+            if self.do_resizing == "yes":
+                zf_size = os.path.getsize(zip_file)            
+                # check zip_max_size parameter                
+                if not self.zf_max_size.endswith('m') or not self.zf_max_size[:-1].isdigit():
+                    self.logger.error("unknown value for 'zip_max_size' parameter on configuration file, example for correct value zip_max_size=\"2M\"")
+                    raise Exception("Value error for zip_max_size parameter, got: {0}".format(self.zf_max_size))
+                else:                
+                    zf_max_size = int(self.zf_max_size[:-1]) * 1000000
+                    # compare size                    
+                    if zf_size > zf_max_size:                       
+                        origin_zip_file = zipfile.ZipFile(zip_file, mode='r')
+                        origin_zip_content = origin_zip_file.namelist()
+                        origin_zip_uniq_content = set(map(lambda x: x.split('-')[0], origin_zip_content))                        
+
+                        # check if there is optimization we create new zip file
+                        if len(origin_zip_uniq_content) < len(origin_zip_content):
+                            new_list_image = []
+                            new_zip_filename = os.path.basename(zip_file).split('.')[0] + "_new.zip"
+                            new_zip_filepath = os.path.join(os.path.dirname(zip_file), new_zip_filename)
+                            
+                            if os.path.exists(new_zip_filepath):
+                                try:
+                                    os.remove(new_zip_filepath)
+                                except OSError as ex:
+                                    self.logger.error("Can't remove {0} file, cause: {1}".format(new_zip_filepath, ex))
+                            new_zip_file = zipfile.ZipFile(new_zip_filepath, mode='w', compression=zipfile.ZIP_DEFLATED)
+                            
+                            for uniq_image in sorted(list(origin_zip_uniq_content)):
+                                for index, image in enumerate(origin_zip_content):
+                                    if uniq_image == image.split('-')[0]:
+                                        new_list_image.append(origin_zip_content[index])
+                                        break
+                        
+                            # create new zip basing on new list images
+                            for image in new_list_image:
+                                buffer = origin_zip_file.read(image)
+                                new_zip_file.writestr(image, buffer)                        
+                            
+                            # close zip files
+                            new_zip_file.close()
+                            origin_zip_file.close() 
+
+                            # we delete old zip file and replace it with new zip file
+                            try:                 
+                                origin_file_size = os.path.getsize(zip_file) / 1000000
+                                os.remove(zip_file)
+                                new_file_size = os.path.getsize(new_zip_filepath) / 1000000
+                                os.rename(new_zip_filepath, zip_file)
+                                diff_size_percentage = 100 - ((new_file_size * 100) / origin_file_size)
+                                self.logger.info("[ {0} ] Old file ({1} M) -> new file {2} ({3} M) (optimization: {4} %)".format("TH_ZIP", origin_file_size, new_zip_filepath, new_file_size, diff_size_percentage))
+                            except OSError as ex:
+                                self.logger.error("During deleting old file {0} or renaming {1}, cause: {3}".format(zip_file, new_zip_filepath, ex))
+                                os.remove(new_zip_filepath)
+                                self.logger.info("Delete file {0}".format(new_zip_filepath))
+                            except:
+                                self.logger.error("Unexpected error:", sys.exc_info()[0])
+                                os.remove(new_zip_filepath)
+                                self.logger.info("Delete file {0}".format(new_zip_filepath))
+                        else:
+                            self.logger.info("[ {0} ] File already optimized: {1}".format("TH_ZIP", zip_file))
+
 
 class UploadMode:
     """ Class to select transfer mode, count and delete old files """    
-    def __init__(self):        
-        self.vaidir = BaseConfig.VAI_DIR
-        self.diagfiles_threshold = int(BaseConfig().config.get('transfermode'))
-        self.logger = logging.getLogger(__name__)
 
+    def __init__(self):
+        self.logger = logging.getLogger(__name__)        
+        self.vaidir = BaseConfig.VAI_DIR
+        self.diagfiles_threshold = int(BaseConfig().config.get('transfermode'))     
+         
     def count_diag_files(self):
         count = 0
         for root, dirs, files in os.walk(self.vaidir, topdown=True, onerror=None, followlinks=True):
             if len(files) != 0:
                 for file in files:
-                    filename = os.path.join(root, file)
-                    file_epoch = datetime.fromtimestamp(os.path.getmtime(filename))
-                    diff_epoch = datetime.now() - file_epoch
-                    if diff_epoch.days >= int(BaseConfig.load_config().get('retention')):
-                        try:
+                    try:
+                        filename = os.path.join(root, file)
+                        file_epoch = datetime.fromtimestamp(os.path.getmtime(filename))
+                        diff_epoch = datetime.now() - file_epoch                       
+                        if diff_epoch.days >= int(BaseConfig.load_config().get('retention')):                            
                             self.logger.info("Delete file {0}, age > {1} days !!".format(filename, diff_epoch.days))
-                            os.remove(filename)
-                        except OSError as ex:            
-                            self.logger.error("During deleting file: {0}, cause: {1}".format(filename, ex))    
+                            try:
+                                os.remove(filename)
+                            except OSError as ex:            
+                                self.logger.error("During deleting file: {0}, cause: {1}".format(filename, ex))
+                    except Exception as ex:            
+                        self.logger.error("During counting number of files on: {0}, cause: {1}".format(self.vaidir, ex))
             count += len(files)
         return count
 
@@ -96,11 +188,11 @@ class UploadMode:
 class Distribdiag(Thread):
     """ Class to send files over http """  
     DIAG_DIRS = map(lambda x: x.strip(), BaseConfig().config.get('directories').split(' '))
+    SERVER_FILENAME = BaseConfig().config.get('endpoint')
     CONFIG = {"server"  : BaseConfig().config.get('server'),
               "port"    : BaseConfig().config.get('port'),
               "login"   : BaseConfig().config.get('login'),
-              "password": BaseConfig().config.get('password')}  
-    SERVER_FILENAME = BaseConfig().config.get('endpoint')
+              "password": BaseConfig().config.get('password')}      
 
     def __init__(self, currdir, logger=None, mode=None):
         Thread.__init__(self)
@@ -125,7 +217,6 @@ class Distribdiag(Thread):
         # disable warning from InsecureRequestWarning
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
         self.logger.info("{0} OK connection established to {1}".format(self.threadname, self.url))
-        
 
     def upload_diag(self, filename):
         
@@ -138,7 +229,7 @@ class Distribdiag(Thread):
         statinfo = os.stat(filename)     
           
         try:
-            time.sleep(1) # fix Exception : ConnectionResetError 10054, An existing connection was forcibly closed by the remote host
+            time.sleep(1)  # fix Exception : ConnectionResetError 10054, An existing connection was forcibly closed by the remote host
             t0 = time.time()
             response = self.conn.request_encode_body('POST', self.post_url, fields, self.headers)
             t1 = time.time()
@@ -167,14 +258,12 @@ class Distribdiag(Thread):
             self.logger.error("{0} During Deleting old file for {1}, cause: {2}".format(self.threadname, filename, ex))
         except Exception as ex:
             self.logger.error("{0} During Create ZIP file for {1}, cause: {2}".format(self.threadname, filename, ex))
-        
-        
 
-    def count_diag_files(self, d):
-        count = 0
-        for root, dirs, files in os.walk(d, topdown=True, onerror=None, followlinks=True):
-            count += len(files)
-        return count
+#     def count_diag_files(self, d):
+#         count = 0
+#         for root, dirs, files in os.walk(d, topdown=True, onerror=None, followlinks=True):
+#             count += len(files)
+#         return count
     
     def prepare_upload_diag(self, currentdir):
         alldiagfiles = glob.glob(currentdir + "\\*.*")
@@ -182,7 +271,7 @@ class Distribdiag(Thread):
             self.logger.info("{0} Count files: {1} Files on {2}".format(self.threadname, len(alldiagfiles), currentdir))
             if os.path.basename(currentdir) in ('zip', 'hwl'):
                 alldiagfiles.sort(key=os.path.getsize)
-                alldiagfiles = list(reversed(alldiagfiles))
+                alldiagfiles = list(reversed(alldiagfiles))            
             else:
                 alldiagfiles.sort(key=os.path.getmtime)
             for fullfilename in reversed(alldiagfiles):
@@ -195,6 +284,9 @@ class Distribdiag(Thread):
                     if fullfilename.split('.')[-1] in ["pcap", "txt", "har", "dbg"]:
                         self.zipvai(fullfilename)
                         filetoupload += ".bz2"
+                    elif os.path.basename(os.path.dirname(fullfilename)) == "zip":
+                        # try to resizing file                
+                        ZipFileResizer().resize_zip_file(fullfilename)
                     upload = self.upload_diag(filetoupload)
                     if upload[0]:
                         self.logger.info("{0} Transfer OK: {1}, Status: {2}".format(self.threadname, filetoupload, upload))
@@ -206,7 +298,6 @@ class Distribdiag(Thread):
                         self.logger.error("{0} Transfer KO: {1}, Status: {2}".format(self.threadname, filetoupload, upload))
         else:
             self.logger.info("{0} Nothing to do on {1}, cause: Empty directory".format(self.threadname, currentdir))
-    
     
     def start_upload_diag(self, currentdir):       
         if os.path.exists(currentdir):
@@ -221,7 +312,6 @@ class Distribdiag(Thread):
                 self.prepare_upload_diag(currentdir)
         else:
             self.logger.info("{0} Nothing to do on {1}, cause: Path does not exist".format(self.threadname, currentdir))
-            
 
     def run(self):
         if self.mode == "sequential":
@@ -234,7 +324,6 @@ class Distribdiag(Thread):
     def __del__(self):
         self.logger.info("{0} Closing connection ...".format(self.threadname))
         self.conn.close()
-    
 
 
 def main():

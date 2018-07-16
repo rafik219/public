@@ -7,7 +7,8 @@
     <diags>
 		<directories list="jpg txt har dbg zip hwl avi pcap"/>
 		<retention days="30"/>
-		<transfermode threshold="500"/>
+		<resize_zip zip_max_size="2M" image_per_second="1" enable="yes"/>
+		<transfermode threshold="200"/>
 		<logging level="warning"/>
     </diags>
 </disthttp>
