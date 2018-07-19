@@ -1,0 +1,88 @@
+- name: Install distribdiag chine rebond
+  vars:
+    HOST_COUNT: "{{ ansible_play_hosts | length }}"
+    pop_log_dir: "/opt/iplabel/log/vai/"
+    global_log: "/opt/iplabel/log/"
+  hosts:
+    PEKCNCRIALITY
+    PEKCNCRIALITYNEW
+    SHACNCRIALITY
+    SHACNCRIALITY23
+    SHECNCRIALITY
+    SHECNCALYNRIALITY
+    HANCNCRIALITY
+    XIACNCRIALITY
+    ZGZCNCRIALITY
+    FUZCNCRIALITY
+    WUXCNCRIALITY
+    SHYCNCRIALITY
+    GUACNCRIALITY
+    QINCNCRIALITY
+
+  gather_facts: True
+  tasks:
+    - name: create tmp directory
+      win_file:
+        path: 'c:\tmp_install'
+        state: directory
+
+    - name: download pip
+      win_copy:
+        src: 'files/get-pip.py'
+        dest: 'C:\tmp_install\get-pip.py'
+        force: no
+
+    - name: install pip
+      raw: python C:\tmp_install\get-pip.py
+      register: install_status
+
+    - debug: var=install_status
+
+    - name: install urllib3
+      raw: C:\iplabel\python\Python34\Scripts\pip.exe install urllib3
+      register: urllib3_status
+    - debug: var=urllib3_status
+
+    - name: stop schedultask
+      raw:  Stop-ScheduledTask -TaskName "\iplabel\dtm - diags"
+      register: stop_status
+    - debug: var=stop_status
+
+    - name: rename old distridiag script
+      raw: Rename-Item -Path 'C:\iplabel\bin\distrib\uploadvais3.py' -NewName 'C:\iplabel\bin\distrib\uploadvais3.py.old'
+      ignore_errors: True
+
+    - name: copy script to tmp directory
+      win_copy:
+        src: 'files/prod/uploadvais3.py'
+        dest: 'C:\iplabel\bin\distrib\uploadvais3.py'
+        force: yes
+
+    - name: copy config file to directory
+      win_copy:
+        src: 'files/prod/distribvai.xml'
+        dest: 'C:\iplabel\config\distribvai.xml'
+        force: yes
+      register: copy_status
+      ignore_errors: True
+    - debug : var=copy_status
+
+    # - name: checking
+    #   raw: Rename-Item -Path 'C:\iplabel\bin\distrib\uploadvais3.py.old' -NewName 'C:\iplabel\bin\distrib\uploadvais3.py'
+    #   when: copy_status.operation != "file_copy"
+
+    - name: start schedultask
+      raw:  Start-ScheduledTask -TaskName "\iplabel\dtm - diags"
+      register: output
+    - debug: var=output
+
+    - name: logging when download is succeseded
+      local_action:
+        shell /usr/bin/echo `date +"%F"`"_"`date +"%T"`  "{{ansible_hostname}} OK"  >> "{{pop_log_dir}}{{group_names}}.log"
+      when: output.changed == true
+
+
+    # - name: delete tmp dir
+    #   win_file:
+    #     path: 'c:\tmp_install'
+    #     state: absent
