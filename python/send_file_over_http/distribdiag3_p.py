@@ -6,31 +6,37 @@
 # utility:   ditrib HTTP diag
 # rbo:       06/07/2018 
 #            updating : adding config file
+#
 # rbo:       12/07/2018
 #            updating: add resize zip file
+#
+# rbo:       17/07/2018
+#            adding S3 send file
 #**************************
 
-from threading import Thread
-from socket import gethostname
-import logging.handlers
-from datetime import datetime
-from random import randint
-import sys
-import urllib3
-import hashlib
-import os
+import boto
 import bz2
 import glob
+import hashlib
+import logging.handlers
+import os
+import sys
 import time
+import urllib3
 import xml.dom.minidom
 import zipfile
+from boto.s3.key import Key
+from datetime import datetime
+from random import randint
+from socket import gethostname
+from threading import Thread
 
 
 class BaseConfig:
-    """ Class to load configuration from distribhttp.xml file """
+    """ Class to load configuration from distribvai.xml file """
     VAI_DIR = os.path.join(os.getenv('IPLABEL'), "vai")
     CONFIG_DIR = os.path.join(os.getenv('IPLABEL'), "config")
-    CONFIG_FILE = "distribhttp.xml"
+    CONFIG_FILE = "distribvai.xml"
     CONFIG_FILE_PATH = os.path.join(CONFIG_DIR, CONFIG_FILE)
     _instances = None
         
@@ -50,19 +56,26 @@ class BaseConfig:
         
         try:
             etree = xml.dom.minidom.parse(BaseConfig.CONFIG_FILE_PATH)
-                        
-            config['login']         = etree.getElementsByTagName('credentials')[0].getAttribute('login')
-            config['password']      = etree.getElementsByTagName('credentials')[0].getAttribute('password')
-            config['server']        = etree.getElementsByTagName('server')[0].getAttribute('addr')
-            config['port']          = etree.getElementsByTagName('server')[0].getAttribute('port')
-            config['endpoint']      = etree.getElementsByTagName('endpoint')[0].getAttribute('filename')
-            config['directories']   = etree.getElementsByTagName('directories')[0].getAttribute('list')
-            config['retention']     = etree.getElementsByTagName('retention')[0].getAttribute('days')
-            config['transfermode']  = etree.getElementsByTagName('transfermode')[0].getAttribute('threshold')
-            config['loglevel']      = etree.getElementsByTagName('logging')[0].getAttribute('level')                
-            config['zip_max_size']  = etree.getElementsByTagName('resize_zip')[0].getAttribute('zip_max_size')
-            config['zip_resizign']  = etree.getElementsByTagName('resize_zip')[0].getAttribute('enable')
-            config['zip_nb_ips']    = etree.getElementsByTagName('resize_zip')[0].getAttribute('image_per_second')
+            # rebound configuration parameters
+            config['to_rebound'] = etree.getElementsByTagName('rebound')[0].getAttribute('enable')
+            config['login'] = etree.getElementsByTagName('credentials')[0].getAttribute('login')
+            config['password'] = etree.getElementsByTagName('credentials')[0].getAttribute('password')
+            config['server'] = etree.getElementsByTagName('server')[0].getAttribute('addr')
+            config['port'] = etree.getElementsByTagName('server')[0].getAttribute('port')
+            config['endpoint'] = etree.getElementsByTagName('endpoint')[0].getAttribute('filename')        
+                
+            # s3 configuration parameters
+            config['to_s3'] = etree.getElementsByTagName('s3')[0].getAttribute('enable')
+            config['aws_access_key'] = etree.getElementsByTagName('credentials')[1].getAttribute('aws_access_key')
+            config['aws_secret_key'] = etree.getElementsByTagName('credentials')[1].getAttribute('aws_secret_key')            
+            
+            # diags configuration parameters
+            config['directories'] = etree.getElementsByTagName('directories')[0].getAttribute('list')
+            config['retention'] = etree.getElementsByTagName('retention')[0].getAttribute('days')
+            config['transfermode'] = etree.getElementsByTagName('transfermode')[0].getAttribute('threshold')
+            config['loglevel'] = etree.getElementsByTagName('logging')[0].getAttribute('level')                
+            config['zip_max_size'] = etree.getElementsByTagName('resize_zip')[0].getAttribute('zip_max_size')
+            config['zip_resizign'] = etree.getElementsByTagName('resize_zip')[0].getAttribute('enable')            
                    
         except Exception as ex:
             raise Exception("During parsing {0} configuration file, cause: {1}".format(BaseConfig.CONFIG_FILE_PATH, ex))
@@ -80,10 +93,9 @@ class ZipFileResizer:
         return cls._instances
     
     def __init__(self):      
-        self.logger = logging.getLogger(__name__)
-        self.zf_nb_ips = BaseConfig().config.get('zip_nb_ips').lower()
-        self.do_resizing = BaseConfig().config.get('zip_resizign').lower()
-        self.zf_max_size = BaseConfig().config.get('zip_max_size').lower()   
+        self.logger = logging.getLogger(__name__)        
+        self.do_resizing = BaseConfig().config.get('zip_resizign').strip().lower()
+        self.zf_max_size = BaseConfig().config.get('zip_max_size').strip().lower()   
             
     def resize_zip_file(self, zip_file):            
             """ resize zip file if: size is great then zip_max_file and enable parameter is yes """                 
@@ -186,38 +198,83 @@ class UploadMode:
 
 
 class Distribdiag(Thread):
-    """ Class to send files over http """  
+    """ Class to send files over http """
     DIAG_DIRS = map(lambda x: x.strip(), BaseConfig().config.get('directories').split(' '))
-    SERVER_FILENAME = BaseConfig().config.get('endpoint')
-    CONFIG = {"server"  : BaseConfig().config.get('server'),
-              "port"    : BaseConfig().config.get('port'),
-              "login"   : BaseConfig().config.get('login'),
-              "password": BaseConfig().config.get('password')}      
-
+    DIAGS_TO_S3 = BaseConfig().config.get('to_s3').strip().lower()
+    DIAGS_TO_REBOUND = BaseConfig().config.get('to_rebound').strip().lower()
+    AWS_ACCESS_KEY = BaseConfig().config.get('aws_access_key').strip()
+    AWS_SECRET_KEY = BaseConfig().config.get('aws_secret_key').strip()   
+    SERVER_FILENAME = BaseConfig().config.get('endpoint').strip()
+    CONFIG = {"server"  : BaseConfig().config.get('server').strip(),
+                        "port"    : BaseConfig().config.get('port').strip(),
+                        "login"   : BaseConfig().config.get('login').strip(),
+                        "password": BaseConfig().config.get('password').strip()}   
+    
     def __init__(self, currdir, logger=None, mode=None):
         Thread.__init__(self)
-        self.logger = logger or logging.getLogger(__name__)
-        self.mode = mode
+        self.mode = mode          
+        self.logger = logger or logging.getLogger(__name__)        
         self.threadname = "[ th_{0} ]".format(os.path.basename(currdir)).upper()
         self.currentdir = os.path.join(BaseConfig.VAI_DIR, currdir)
         
-        self.logger.info("{0} Select current directory '{1}'".format(self.threadname, self.currentdir))
+        self.logger.info("{0} Select current directory '{1}'".format(self.threadname, self.currentdir))        
+                
+        if Distribdiag.DIAGS_TO_S3 == "yes":            
+            self.conn = boto.connect_s3(Distribdiag.AWS_ACCESS_KEY, Distribdiag.AWS_SECRET_KEY)
+            self.vaibucket = self.conn.get_bucket('vai-znb')
+            
+        elif Distribdiag.DIAGS_TO_REBOUND == "yes":
+            self.url = "{0}:{1}".format(Distribdiag.CONFIG.get('server'), Distribdiag.CONFIG.get('port'))      
+            self.logger.info("{0} Start dedicated thread on {1}".format(self.threadname, self.currentdir))
+            self.logger.info("{0} Opening connection to: {1}".format(self.threadname, self.url))
+            self.conn = urllib3.connection_from_url(self.url)        
+            self.post_url = "{0}/{1}".format(self.url, Distribdiag.SERVER_FILENAME)
+            self.headers = urllib3.make_headers(basic_auth='%s:%s' % (Distribdiag.CONFIG.get('login'),
+                                                                 Distribdiag.CONFIG.get('password')),
+                                                                 keep_alive=True,
+                                                                 user_agent=gethostname())        
+            # disable warning from InsecureRequestWarning
+            urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+            self.logger.info("{0} OK connection established to {1}".format(self.threadname, self.url))
+        else:
+            self.logger.error('Invalid parameter for S3 or Rebound transfer mode, put enable="yes" to activate ...')            
+            raise
         
-        self.url = "{0}:{1}".format(Distribdiag.CONFIG.get('server'), Distribdiag.CONFIG.get('port'))        
+    def upload_diag_s3(self, fullfilename):      
+        filename = os.path.basename(fullfilename)        
+        file_date = filename.split('_')[1]
+        file_date_year = file_date[0:4]
+        file_date_month = file_date[4:6]
+        file_date_day = file_date[6:8]
+        file_date_hour = file_date[8:10]
+        try:
+            # get bucket key      
+            bucket_key = Key(self.vaibucket)
+            # create bucket if not exist
+            bucket_year = self.vaibucket.new_key(file_date_year + "/")
+            bucket_year.set_contents_from_string("")
+            path_s3 = "{0}/{1}/{2}/{3}/".format(file_date_year, file_date_month, file_date_day, file_date_hour)
+            file_path_s3 = os.path.join(path_s3, filename)
+            bucket_key = self.vaibucket.new_key(file_path_s3)
+            # upload file to bucket
+            bucket_key.set_contents_from_filename(fullfilename)        
+            # check MD5
+            fdiag = open(fullfilename, 'rb')
+            Md5_fdiag = hashlib.md5(fdiag.read()).hexdigest()
+            fdiag.close()
+            
+            Md5_fdiag_s3 = bucket_key.etag.strip('"').strip("'")
+            
+            if Md5_fdiag == Md5_fdiag_s3:                            
+                return (True, "OK : {0} File Transfered to S3".format(fullfilename))            
+            else:            
+                self.logger.error("During upload {0} to S3, cause: Md5 CheckSum different".format(fullfilename))
+                bucket_key.delete()     
+        except Exception as ex:
+            self.logger.error("During uploading file {0} to S3, cause: {1} we will retry again ...".format(fullfilename, ex))
         
-        self.logger.info("{0} Start dedicated thread on {1}".format(self.threadname, self.currentdir))
-        self.logger.info("{0} Opening connection to: {1}".format(self.threadname, self.url))
-        
-        self.conn = urllib3.connection_from_url(self.url)        
-        self.post_url = "{0}/{1}".format(self.url, Distribdiag.SERVER_FILENAME)
-        self.headers = urllib3.make_headers(basic_auth='%s:%s' % (Distribdiag.CONFIG.get('login'),
-                                                             Distribdiag.CONFIG.get('password')),
-                                                             keep_alive=True,
-                                                             user_agent=gethostname())        
-        # disable warning from InsecureRequestWarning
-        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-        self.logger.info("{0} OK connection established to {1}".format(self.threadname, self.url))
-
+        return (False, "KO : {0} File not Transfered to S3".format(fullfilename))       
+                
     def upload_diag(self, filename):
         
         with open(filename, 'rb') as diag:
@@ -249,7 +306,7 @@ class Distribdiag(Thread):
 
     def zipvai(self, filename):
         try:
-            self.logger.info("{0} Create ZIP file for {1}".format(self.threadname, filename))
+            self.logger.info("{0} Compress file for {1}".format(self.threadname, filename))
             zfile = bz2.BZ2File(filename + ".bz2", "wb")
             zfile.write(open(filename, "rb").read())
             zfile.close()
@@ -257,13 +314,13 @@ class Distribdiag(Thread):
         except OSError as ex:
             self.logger.error("{0} During Deleting old file for {1}, cause: {2}".format(self.threadname, filename, ex))
         except Exception as ex:
-            self.logger.error("{0} During Create ZIP file for {1}, cause: {2}".format(self.threadname, filename, ex))
+            self.logger.error("{0} During compressing file for {1}, cause: {2}".format(self.threadname, filename, ex))
 
-#     def count_diag_files(self, d):
-#         count = 0
-#         for root, dirs, files in os.walk(d, topdown=True, onerror=None, followlinks=True):
-#             count += len(files)
-#         return count
+    def count_diag_files(self, d):
+        count = 0
+        for root, dirs, files in os.walk(d, topdown=True, onerror=None, followlinks=True):
+            count += len(files)
+        return count
     
     def prepare_upload_diag(self, currentdir):
         alldiagfiles = glob.glob(currentdir + "\\*.*")
@@ -287,11 +344,14 @@ class Distribdiag(Thread):
                     elif os.path.basename(os.path.dirname(fullfilename)) == "zip":
                         # try to resizing file                
                         ZipFileResizer().resize_zip_file(fullfilename)
-                    upload = self.upload_diag(filetoupload)
+                    if Distribdiag.DIAGS_TO_S3 == "yes":
+                        upload = self.upload_diag_s3(filetoupload)
+                    elif Distribdiag.DIAGS_TO_REBOUND == "yes":
+                        upload = self.upload_diag(filetoupload)
                     if upload[0]:
                         self.logger.info("{0} Transfer OK: {1}, Status: {2}".format(self.threadname, filetoupload, upload))
                         try:
-                            os.remove(filetoupload)
+                            os.remove(filetoupload)                            
                         except OSError as ex:
                             self.logger.error("{0} During Deleting file {1}, cause: {2}".format(self.threadname, filetoupload, ex))
                     else:
