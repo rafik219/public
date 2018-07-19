@@ -1,0 +1,21 @@
+<distvai>
+	<rebound enable="yes">
+	    <connection>
+		<credentials login="xxxxx" password="xxxxxx"/>
+		<server addr="https://xxxx.x.ip-label.net" port="443"/>
+		<endpoint filename="upload_xx.php"/>
+	    </connection>
+	</rebound>
+	<s3 enable="no">
+    		<connection>
+			<credentials aws_access_key="XXXXXXXX" aws_secret_key="XXXXXXXXXX"/>			
+    		</connection>
+    	</s3>
+    	<diags>
+		<directories list="jpg txt har dbg zip hwl avi pcap"/>
+		<retention days="30"/>
+		<resize_zip zip_max_size="5M" enable="yes"/>
+		<transfermode threshold="200"/>
+		<logging level="warning"/>
+    	</diags>
+</distvai>
